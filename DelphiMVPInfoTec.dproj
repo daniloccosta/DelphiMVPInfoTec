@@ -85,6 +85,8 @@
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -101,17 +103,28 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="MainUnit.pas">
-            <Form>Form1</Form>
+            <Form>MainForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\Teste\Models\Cliente.pas"/>
-        <DCCReference Include="..\Teste\Models\ClienteIntf.pas"/>
-        <DCCReference Include="..\Teste\Models\Item.pas"/>
-        <DCCReference Include="..\Teste\Models\ItemIntf.pas"/>
-        <DCCReference Include="..\Teste\Models\Pedido.pas"/>
-        <DCCReference Include="..\Teste\Models\PedidoIntf.pas"/>
-        <DCCReference Include="..\Teste\Models\Produto.pas"/>
-        <DCCReference Include="..\Teste\Models\ProdutoIntf.pas"/>
+        <DCCReference Include="Models\ClienteM.pas"/>
+        <DCCReference Include="Models\ClienteIntf.pas"/>
+        <DCCReference Include="Models\Item.pas"/>
+        <DCCReference Include="Models\ItemIntf.pas"/>
+        <DCCReference Include="Models\Pedido.pas"/>
+        <DCCReference Include="Models\PedidoIntf.pas"/>
+        <DCCReference Include="Models\Produto.pas"/>
+        <DCCReference Include="Models\ProdutoIntf.pas"/>
+        <DCCReference Include="Views\ClientesForm.pas">
+            <Form>FormClientes</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Views\ProdutosForm.pas">
+            <Form>FormProdutos</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Commons\Cliente.pas"/>
+        <DCCReference Include="Interfaces\ClienteMVPIntf.pas"/>
+        <DCCReference Include="Presenters\ClientePresenter.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -132,6 +145,12 @@
                 <Source>
                     <Source Name="MainSource">DelphiMVPInfoTec.dpr</Source>
                 </Source>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k280.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
                 <DeployFile LocalName="Win32\Debug\DelphiMVPInfoTec.exe" Configuration="Debug" Class="ProjectOutput">
@@ -942,9 +961,9 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
