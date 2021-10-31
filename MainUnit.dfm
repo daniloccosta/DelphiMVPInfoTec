@@ -30,6 +30,7 @@ object MainForm: TMainForm
     Height = 25
     Caption = 'Produtos'
     TabOrder = 1
+    OnClick = btCadProdutosClick
   end
   object btVendas: TButton
     Left = 32

@@ -3,7 +3,7 @@ object FormProdutos: TFormProdutos
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Produtos'
-  ClientHeight = 327
+  ClientHeight = 367
   ClientWidth = 571
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -35,11 +35,28 @@ object FormProdutos: TFormProdutos
     Height = 15
     Caption = 'Produtos'
   end
+  object Label4: TLabel
+    Left = 16
+    Top = 309
+    Width = 346
+    Height = 15
+    Caption = 
+      'Para excluir um registro selecionado, pressione as telas CTRL+DE' +
+      'L'
+  end
+  object Label5: TLabel
+    Left = 16
+    Top = 330
+    Width = 317
+    Height = 15
+    Caption = 'Para alterar um registro, d'#234' um clique duplo sobre o registro'
+  end
   object edDescricao: TEdit
     Left = 16
     Top = 40
     Width = 281
     Height = 23
+    CharCase = ecUpperCase
     TabOrder = 0
   end
   object edPreco: TEdit
@@ -56,6 +73,7 @@ object FormProdutos: TFormProdutos
     Height = 25
     Caption = '&Adicionar'
     TabOrder = 2
+    OnClick = btAdicionarClick
   end
   object lvProdutos: TListView
     Left = 16
@@ -78,5 +96,7 @@ object FormProdutos: TFormProdutos
       end>
     TabOrder = 3
     ViewStyle = vsReport
+    OnDblClick = lvProdutosDblClick
+    OnKeyDown = lvProdutosKeyDown
   end
 end

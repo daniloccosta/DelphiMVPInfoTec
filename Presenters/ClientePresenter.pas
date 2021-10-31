@@ -53,7 +53,8 @@ end;
 
 function TClientePresenter.Get: TCliente;
 begin
-  Result := Model.Get; //Testar!!! NNão atribuí para View
+  Model.Cliente := View.Cliente;
+  Result := Model.Get;
 end;
 
 //function TClientePresenter.GetCliente: TCliente;
@@ -73,7 +74,7 @@ end;
 
 function TClientePresenter.ListAll: TList<TCliente>;
 begin
-  Result := Model.ListAll; //Como retornar isso pro View????
+  Result := Model.ListAll;
 end;
 
 //procedure TClientePresenter.SetCliente(Value: TCliente);

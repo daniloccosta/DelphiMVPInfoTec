@@ -9,13 +9,16 @@ uses
   ItemIntf in 'Models\ItemIntf.pas',
   Pedido in 'Models\Pedido.pas',
   PedidoIntf in 'Models\PedidoIntf.pas',
-  Produto in 'Models\Produto.pas',
+  Produto in 'Commons\Produto.pas',
   ProdutoIntf in 'Models\ProdutoIntf.pas',
   ClientesForm in 'Views\ClientesForm.pas' {FormClientes},
   ProdutosForm in 'Views\ProdutosForm.pas' {FormProdutos},
   Cliente in 'Commons\Cliente.pas',
   ClienteMVPIntf in 'Interfaces\ClienteMVPIntf.pas',
-  ClientePresenter in 'Presenters\ClientePresenter.pas';
+  ClientePresenter in 'Presenters\ClientePresenter.pas',
+  ProdutoM in 'Models\ProdutoM.pas',
+  ProdutoMVPIntf in 'Interfaces\ProdutoMVPIntf.pas',
+  ProdutoPresenter in 'Presenters\ProdutoPresenter.pas';
 
 {$R *.res}
 

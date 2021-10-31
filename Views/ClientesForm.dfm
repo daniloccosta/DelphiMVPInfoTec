@@ -3,7 +3,7 @@ object FormClientes: TFormClientes
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Clientes'
-  ClientHeight = 349
+  ClientHeight = 342
   ClientWidth = 466
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
