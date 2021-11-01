@@ -76,6 +76,8 @@ begin
     ListarClientes;
     Estado := [Inserindo];
   end;
+
+  edNome.Text := '';
   edNome.SetFocus;
   AtualizaBtn;
 end;

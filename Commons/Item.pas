@@ -2,32 +2,30 @@ unit Item;
 
 interface
 
+uses Produto;
+
 type
   TItem = class
   private
-    FIdProduto: Integer;
+    FProduto: TProduto;
     FQuantidade: Double;
-    FValorUnit: Double;
   protected
-    function GetIdProduto: Integer;
-    procedure SetIdProduto(Value: Integer);
+    function GetProduto: TProduto;
+    procedure SetProduto(Value: TProduto);
     function GetQuantidade: Double;
     procedure SetQuantidade(Value: Double);
-    function GetValorUnit: Double;
-    procedure SetValorUnit(Value: Double);
   public
-    property IdProduto: Integer read GetIdProduto write SetIdProduto;
+    property Produto: TProduto read GetProduto write SetProduto;
     property Quantidade: Double read GetQuantidade write SetQuantidade;
-    property ValorUnit: Double read GetValorUnit write SetValorUnit;
   end;
 
 implementation
 
 { TItem }
 
-function TItem.GetIdProduto: Integer;
+function TItem.GetProduto: TProduto;
 begin
-  Result := FIdProduto;
+  Result := FProduto;
 end;
 
 function TItem.GetQuantidade: Double;
@@ -35,24 +33,14 @@ begin
   Result := FQuantidade;
 end;
 
-function TItem.GetValorUnit: Double;
+procedure TItem.SetProduto(Value: TProduto);
 begin
-  Result := FValorUnit;
-end;
-
-procedure TItem.SetIdProduto(Value: Integer);
-begin
-  FIdProduto := Value;
+  FProduto := Value;
 end;
 
 procedure TItem.SetQuantidade(Value: Double);
 begin
   FQuantidade := Value;
-end;
-
-procedure TItem.SetValorUnit(Value: Double);
-begin
-  FValorUnit := Value;
 end;
 
 end.

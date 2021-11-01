@@ -30,6 +30,7 @@ type
     function GetItems: TList<TItem>;
     procedure SetItems(Value: TList<TItem>);
   public
+    constructor Create;
     property Id: Integer read GetId write SetId;
     property Cliente: TCliente read GetCliente write SetCliente;
     property DataPedido: TDate read GetDataPedido write SetDataPedido;
@@ -61,6 +62,12 @@ end;
 function TPedido.GetId: Integer;
 begin
   Result :=FId;
+end;
+
+constructor TPedido.Create;
+begin
+  FCliente := TCliente.Create;
+  FItems := TList<TItem>.Create;
 end;
 
 function TPedido.GetCliente: TCliente;

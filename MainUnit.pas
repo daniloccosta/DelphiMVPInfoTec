@@ -4,7 +4,9 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, ClientesForm;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, ClientesForm,
+  ClienteIntf, ClienteMVPIntf, ProdutoIntf, ProdutoMVPIntf, PedidoIntf,
+  PedidoMVPIntf;
 
 type
   TMainForm = class(TForm)
@@ -16,8 +18,19 @@ type
     procedure btVendasClick(Sender: TObject);
   private
     { Private declarations }
+    procedure IniciarPresenterCliente;
+    procedure IniciarPresenterProduto;
+    procedure IniciarPresenterPedido;
   public
     { Public declarations }
+    ModelCliente: ICliente;
+    PresenterCliente: IClientePresenter;
+
+    ModelProduto: IProduto;
+    PresenterProduto: IProdutoPresenter;
+
+    ModelPedido: IPedido;
+    PresenterPedido: IPedidoPresenter;
   end;
 
 var
@@ -27,59 +40,75 @@ implementation
 
 {$R *.dfm}
 
-uses ClienteMVPIntf, ClienteIntf, ClientePresenter, ClienteM, ProdutosForm,
-  ProdutoMVPIntf, ProdutoIntf, ProdutoM, ProdutoPresenter, VendasForm,
-  PedidoIntf, PedidoMVPIntf, PedidoPresenter, PedidoM;
+uses ClientePresenter, ClienteM, ProdutosForm,
+  ProdutoM, ProdutoPresenter, VendasForm,
+  PedidoPresenter, PedidoM;
 
 //uses ClienteIntf, ClienteMVPIntf, ClientePresenter, ClienteM;
 
 procedure TMainForm.btCadCLientesClick(Sender: TObject);
 var
-  pView: IClienteView;
-  pCliente: ICliente;
-  pPresenter: IClientePresenter;
+  ViewCliente: IClienteView;
 begin
-  pView := TFormClientes.Create(Nil);
-  pPresenter := TClientePresenter.Create;
-  pCliente := TClienteM.Create;
+  ViewCliente := TFormClientes.Create(Nil);
 
-  pPresenter.Model := pCliente;
-  pPresenter.View := pView;
-  pView.Presenter := pPresenter;
-  pView.ShowView;
+  IniciarPresenterCliente;
+
+  PresenterCliente.View := ViewCliente;
+  ViewCliente.Presenter := PresenterCliente;
+  ViewCliente.ShowView;
 end;
 
 procedure TMainForm.btCadProdutosClick(Sender: TObject);
 var
-  pView: IProdutoView;
-  pProduto: IProduto;
-  pPresenter: IProdutoPresenter;
+  ViewProduto: IProdutoView;
 begin
-  pView := TFormProdutos.Create(Nil);
-  pPresenter := TProdutoPresenter.Create;
-  pProduto := TProdutoM.Create;
+  ViewProduto := TFormProdutos.Create(Nil);
 
-  pPresenter.Model := pProduto;
-  pPresenter.View := pView;
-  pView.Presenter := pPresenter;
-  pView.ShowView;
+  IniciarPresenterProduto;
+
+  PresenterProduto.View := ViewProduto;
+  ViewProduto.Presenter := PresenterProduto;
+  ViewProduto.ShowView;
 end;
 
 procedure TMainForm.btVendasClick(Sender: TObject);
 var
-  ModelPedido: IPedido;
   ViewPedido: IPedidoView;
-  PresenterPedido: IPedidoPresenter;
 begin
-  ModelPedido := TPedidoM.Create;
-  ViewPedido := TFormVendas.Create(Nil);
-  PresenterPedido := TPedidoPresenter.Create;
+  if (PresenterCliente = nil) then
+    IniciarPresenterCliente;
+  if (PresenterProduto = Nil) then
+    IniciarPresenterProduto;
 
-  PresenterPedido.Model := ModelPedido;
+  ViewPedido := TFormVendas.Create(Nil);
+
+  IniciarPresenterPedido;
+
   PresenterPedido.View := ViewPedido;
   ViewPedido.Presenter := PresenterPedido;
-
   ViewPedido.ShowView;
+end;
+
+procedure TMainForm.IniciarPresenterCliente;
+begin
+  PresenterCliente := TClientePresenter.Create;
+  ModelCliente := TClienteM.Create;
+  PresenterCliente.Model := ModelCliente;
+end;
+
+procedure TMainForm.IniciarPresenterPedido;
+begin
+  ModelPedido := TPedidoM.Create;
+  PresenterPedido := TPedidoPresenter.Create;
+  PresenterPedido.Model := ModelPedido;
+end;
+
+procedure TMainForm.IniciarPresenterProduto;
+begin
+  PresenterProduto := TProdutoPresenter.Create;
+  ModelProduto := TProdutoM.Create;
+  PresenterProduto.Model := ModelProduto;
 end;
 
 end.

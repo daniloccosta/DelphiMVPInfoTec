@@ -33,8 +33,6 @@ type
     procedure AtualizaBtn;
     function CamposPreenchido: Boolean;
     procedure LimparCampos;
-    procedure FormatarComoMoeda(Componente: TObject; var Key: Char);
-    function MoedaToDouble(Val: String): Double;
   protected
     function GetProduto: TProduto;
     procedure SetProduto(Value: TProduto);
@@ -107,40 +105,6 @@ end;
 procedure TFormProdutos.edPrecoKeyPress(Sender: TObject; var Key: Char);
 begin
   FormatarComoMoeda(edPreco, Key);
-end;
-
-procedure TFormProdutos.FormatarComoMoeda(Componente: TObject; var Key: Char);
-var
-   str_valor: String;
-   dbl_valor: double;
-begin
-   { verificando se estamos recebendo o TEdit realmente }
-   if (Componente is TEdit) then
-   begin
-      { se tecla pressionada e' um numero, backspace ou del deixa passar }
-      if CharInSet(Key, ['0'..'9', #8, #9]) then
-      begin
-         { guarda valor do TEdit com que vamos trabalhar }
-         str_valor := TEdit( Componente ).Text ;
-         { verificando se nao esta vazio }
-         if str_valor = EmptyStr then str_valor := '0,00' ;
-         { se valor numerico ja insere na string temporaria }
-         if CharInSet(Key, ['0'..'9']) then str_valor := Concat( str_valor, Key ) ;
-         { retira pontos e virgulas se tiver! }
-         str_valor := Trim( StringReplace( str_valor, '.', '', [rfReplaceAll, rfIgnoreCase] ) ) ;
-         str_valor := Trim( StringReplace( str_valor, ',', '', [rfReplaceAll, rfIgnoreCase] ) ) ;
-         {inserindo 2 casas decimais}
-         dbl_valor := StrToFloat( str_valor ) ;
-         dbl_valor := ( dbl_valor / 100 ) ;
-
-         {reseta posicao do tedit}
-         TEdit( Componente ).SelStart := Length( TEdit( Componente ).Text );
-         {retornando valor tratado ao TEdit}
-         TEdit( Componente ).Text := FormatFloat( '###,##0.00', dbl_valor ) ;
-      end;
-      {se nao e' key relevante entao reseta}
-      if not CharInSet(Key, [#8, #9]) then key := #0;
-   end;
 end;
 
 procedure TFormProdutos.FormCreate(Sender: TObject);
@@ -217,16 +181,6 @@ begin
     Presenter.Delete;
     ListarProdutos;
   end;
-end;
-
-function TFormProdutos.MoedaToDouble(Val: String): Double;
-var
-  aux: String;
-begin
-  aux := StringReplace(Val, '.', '', [rfReplaceAll]);
-  aux := StringReplace(aux, 'R$', '', [rfReplaceAll]);
-  //aux := StringReplace(aux, ',', '.', [rfReplaceAll]);
-  Result := StrToFloat(aux);
 end;
 
 procedure TFormProdutos.SetPresenter(const Value: IProdutoPresenter);

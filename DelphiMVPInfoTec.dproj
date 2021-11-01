@@ -136,6 +136,10 @@
         <DCCReference Include="Models\PedidoM.pas"/>
         <DCCReference Include="Interfaces\PedidoMVPIntf.pas"/>
         <DCCReference Include="Presenters\PedidoPresenter.pas"/>
+        <DCCReference Include="Commons\ProcurarForm.pas">
+            <Form>FormProcurar</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

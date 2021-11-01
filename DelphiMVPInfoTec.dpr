@@ -23,7 +23,8 @@ uses
   VendasForm in 'Views\VendasForm.pas' {FormVendas},
   PedidoM in 'Models\PedidoM.pas',
   PedidoMVPIntf in 'Interfaces\PedidoMVPIntf.pas',
-  PedidoPresenter in 'Presenters\PedidoPresenter.pas';
+  PedidoPresenter in 'Presenters\PedidoPresenter.pas',
+  ProcurarForm in 'Commons\ProcurarForm.pas' {FormProcurar};
 
 {$R *.res}
 
