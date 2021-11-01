@@ -13,6 +13,7 @@ type
     btVendas: TButton;
     procedure btCadCLientesClick(Sender: TObject);
     procedure btCadProdutosClick(Sender: TObject);
+    procedure btVendasClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -27,7 +28,7 @@ implementation
 {$R *.dfm}
 
 uses ClienteMVPIntf, ClienteIntf, ClientePresenter, ClienteM, ProdutosForm,
-  ProdutoMVPIntf, ProdutoIntf, ProdutoM, ProdutoPresenter;
+  ProdutoMVPIntf, ProdutoIntf, ProdutoM, ProdutoPresenter, VendasForm;
 
 //uses ClienteIntf, ClienteMVPIntf, ClientePresenter, ClienteM;
 
@@ -61,6 +62,12 @@ begin
   pPresenter.View := pView;
   pView.Presenter := pPresenter;
   pView.ShowView;
+end;
+
+procedure TMainForm.btVendasClick(Sender: TObject);
+begin
+  FormVendas := TFormVendas.Create(Nil);
+  FormVendas.ShowModal;
 end;
 
 end.

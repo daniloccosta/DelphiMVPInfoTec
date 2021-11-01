@@ -18,7 +18,9 @@ uses
   ClientePresenter in 'Presenters\ClientePresenter.pas',
   ProdutoM in 'Models\ProdutoM.pas',
   ProdutoMVPIntf in 'Interfaces\ProdutoMVPIntf.pas',
-  ProdutoPresenter in 'Presenters\ProdutoPresenter.pas';
+  ProdutoPresenter in 'Presenters\ProdutoPresenter.pas',
+  Utils in 'Commons\Utils.pas',
+  VendasForm in 'Views\VendasForm.pas' {FormVendas};
 
 {$R *.res}
 
@@ -26,5 +28,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TFormVendas, FormVendas);
   Application.Run;
 end.

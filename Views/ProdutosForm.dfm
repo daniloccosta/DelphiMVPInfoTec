@@ -12,6 +12,7 @@ object FormProdutos: TFormProdutos
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poScreenCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 15
   object Label2: TLabel
@@ -65,6 +66,7 @@ object FormProdutos: TFormProdutos
     Width = 121
     Height = 23
     TabOrder = 1
+    OnKeyPress = edPrecoKeyPress
   end
   object btAdicionar: TBitBtn
     Left = 456
@@ -94,6 +96,8 @@ object FormProdutos: TFormProdutos
         Caption = 'Pre'#231'o'
         Width = 80
       end>
+    ReadOnly = True
+    RowSelect = True
     TabOrder = 3
     ViewStyle = vsReport
     OnDblClick = lvProdutosDblClick

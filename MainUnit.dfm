@@ -39,5 +39,6 @@ object MainForm: TMainForm
     Height = 25
     Caption = 'Vendas'
     TabOrder = 2
+    OnClick = btVendasClick
   end
 end
