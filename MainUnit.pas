@@ -28,7 +28,8 @@ implementation
 {$R *.dfm}
 
 uses ClienteMVPIntf, ClienteIntf, ClientePresenter, ClienteM, ProdutosForm,
-  ProdutoMVPIntf, ProdutoIntf, ProdutoM, ProdutoPresenter, VendasForm;
+  ProdutoMVPIntf, ProdutoIntf, ProdutoM, ProdutoPresenter, VendasForm,
+  PedidoIntf, PedidoMVPIntf, PedidoPresenter, PedidoM;
 
 //uses ClienteIntf, ClienteMVPIntf, ClientePresenter, ClienteM;
 
@@ -65,9 +66,20 @@ begin
 end;
 
 procedure TMainForm.btVendasClick(Sender: TObject);
+var
+  ModelPedido: IPedido;
+  ViewPedido: IPedidoView;
+  PresenterPedido: IPedidoPresenter;
 begin
-  FormVendas := TFormVendas.Create(Nil);
-  FormVendas.ShowModal;
+  ModelPedido := TPedidoM.Create;
+  ViewPedido := TFormVendas.Create(Nil);
+  PresenterPedido := TPedidoPresenter.Create;
+
+  PresenterPedido.Model := ModelPedido;
+  PresenterPedido.View := ViewPedido;
+  ViewPedido.Presenter := PresenterPedido;
+
+  ViewPedido.ShowView;
 end;
 
 end.

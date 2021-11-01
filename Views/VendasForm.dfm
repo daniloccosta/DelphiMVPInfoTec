@@ -2,8 +2,8 @@ object FormVendas: TFormVendas
   Left = 0
   Top = 0
   Caption = 'Vendas'
-  ClientHeight = 573
-  ClientWidth = 847
+  ClientHeight = 507
+  ClientWidth = 872
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,7 +14,7 @@ object FormVendas: TFormVendas
   PixelsPerInch = 96
   TextHeight = 15
   object Label1: TLabel
-    Left = 541
+    Left = 557
     Top = 13
     Width = 82
     Height = 21
@@ -27,7 +27,7 @@ object FormVendas: TFormVendas
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 541
+    Left = 557
     Top = 213
     Width = 92
     Height = 21
@@ -40,7 +40,7 @@ object FormVendas: TFormVendas
     ParentFont = False
   end
   object Label3: TLabel
-    Left = 541
+    Left = 557
     Top = 115
     Width = 127
     Height = 21
@@ -53,7 +53,7 @@ object FormVendas: TFormVendas
     ParentFont = False
   end
   object Label4: TLabel
-    Left = 697
+    Left = 713
     Top = 213
     Width = 35
     Height = 21
@@ -131,7 +131,7 @@ object FormVendas: TFormVendas
     ParentFont = False
   end
   object Label10: TLabel
-    Left = 697
+    Left = 713
     Top = 13
     Width = 131
     Height = 21
@@ -145,74 +145,74 @@ object FormVendas: TFormVendas
   end
   object Label11: TLabel
     Left = 8
-    Top = 445
-    Width = 27
-    Height = 17
+    Top = 446
+    Width = 25
+    Height = 15
     Caption = 'C'#243'd.'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
   end
   object Label12: TLabel
     Left = 64
-    Top = 445
-    Width = 57
-    Height = 17
+    Top = 446
+    Width = 51
+    Height = 15
     Caption = 'Descri'#231#227'o'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
   end
   object Label13: TLabel
-    Left = 463
-    Top = 445
-    Width = 38
-    Height = 17
+    Left = 312
+    Top = 446
+    Width = 36
+    Height = 15
     Caption = 'Quant.'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
   end
   object Label14: TLabel
-    Left = 8
-    Top = 509
-    Width = 60
-    Height = 17
+    Left = 368
+    Top = 446
+    Width = 54
+    Height = 15
     Caption = 'Valor Unit.'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
   end
   object Label15: TLabel
-    Left = 121
-    Top = 509
-    Width = 62
-    Height = 17
+    Left = 442
+    Top = 446
+    Width = 54
+    Height = 15
     Caption = 'Valor Total'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
   end
-  object ListView1: TListView
+  object lvCupom: TListView
     Left = 8
     Top = 40
     Width = 527
-    Height = 385
+    Height = 393
     Color = clBtnFace
     Columns = <>
     ColumnClick = False
@@ -228,7 +228,7 @@ object FormVendas: TFormVendas
     TabOrder = 1
   end
   object cbFormaPagtos: TComboBox
-    Left = 541
+    Left = 557
     Top = 142
     Width = 298
     Height = 29
@@ -248,7 +248,7 @@ object FormVendas: TFormVendas
       'TRANSFER'#202'NCIA')
   end
   object dtDataVenda: TDateTimePicker
-    Left = 541
+    Left = 557
     Top = 40
     Width = 138
     Height = 33
@@ -263,7 +263,7 @@ object FormVendas: TFormVendas
     TabOrder = 3
   end
   object dtDataEntrega: TDateTimePicker
-    Left = 541
+    Left = 557
     Top = 240
     Width = 138
     Height = 33
@@ -277,104 +277,110 @@ object FormVendas: TFormVendas
     ParentFont = False
     TabOrder = 4
   end
-  object Edit1: TEdit
-    Left = 696
+  object edTotal: TEdit
+    Left = 712
     Top = 240
     Width = 143
     Height = 33
     Alignment = taRightJustify
+    Color = clInactiveCaption
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    ReadOnly = True
     TabOrder = 5
     Text = '0,00'
   end
   object Edit2: TEdit
-    Left = 697
+    Left = 713
     Top = 40
     Width = 141
     Height = 33
     Alignment = taRightJustify
+    Color = clInactiveCaption
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    ReadOnly = True
     TabOrder = 6
     Text = '000000'
   end
-  object Edit3: TEdit
+  object edCodigo: TEdit
     Left = 8
-    Top = 464
+    Top = 466
     Width = 49
-    Height = 25
+    Height = 23
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
     TabOrder = 7
-    Text = 'Edit3'
   end
-  object Edit4: TEdit
+  object edDescricao: TEdit
     Left = 64
-    Top = 464
-    Width = 393
-    Height = 25
+    Top = 466
+    Width = 242
+    Height = 23
+    Color = clInactiveCaption
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    ReadOnly = True
     TabOrder = 8
-    Text = 'Edit4'
   end
-  object Edit5: TEdit
-    Left = 463
-    Top = 464
-    Width = 72
-    Height = 25
+  object edQuant: TEdit
+    Left = 312
+    Top = 466
+    Width = 50
+    Height = 23
+    Alignment = taRightJustify
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
     TabOrder = 9
-    Text = 'Edit5'
   end
-  object Edit6: TEdit
-    Left = 8
-    Top = 532
-    Width = 97
-    Height = 25
+  object edValorUnit: TEdit
+    Left = 368
+    Top = 466
+    Width = 68
+    Height = 23
+    Alignment = taRightJustify
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
     TabOrder = 10
-    Text = 'Edit6'
   end
-  object Edit7: TEdit
-    Left = 121
-    Top = 532
-    Width = 121
-    Height = 25
+  object edValorTotal: TEdit
+    Left = 442
+    Top = 466
+    Width = 93
+    Height = 23
+    Alignment = taRightJustify
+    Color = clInactiveCaption
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    ReadOnly = True
     TabOrder = 11
-    Text = 'Edit7'
   end
 end

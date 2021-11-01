@@ -108,9 +108,9 @@
         </DCCReference>
         <DCCReference Include="Models\ClienteM.pas"/>
         <DCCReference Include="Models\ClienteIntf.pas"/>
-        <DCCReference Include="Models\Item.pas"/>
+        <DCCReference Include="Commons\Item.pas"/>
         <DCCReference Include="Models\ItemIntf.pas"/>
-        <DCCReference Include="Models\Pedido.pas"/>
+        <DCCReference Include="Commons\Pedido.pas"/>
         <DCCReference Include="Models\PedidoIntf.pas"/>
         <DCCReference Include="Commons\Produto.pas"/>
         <DCCReference Include="Models\ProdutoIntf.pas"/>
@@ -133,6 +133,9 @@
             <Form>FormVendas</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Models\PedidoM.pas"/>
+        <DCCReference Include="Interfaces\PedidoMVPIntf.pas"/>
+        <DCCReference Include="Presenters\PedidoPresenter.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -969,9 +972,9 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

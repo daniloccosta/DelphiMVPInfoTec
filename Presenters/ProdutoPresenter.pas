@@ -44,7 +44,7 @@ end;
 function TProdutoPresenter.Get: TProduto;
 begin
   Model.Produto := View.Produto;
-  Result := Model.Produto;
+  Result := Model.Get;
 end;
 
 function TProdutoPresenter.GetModel: IProduto;
