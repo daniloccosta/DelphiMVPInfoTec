@@ -13,6 +13,8 @@ object FormProcurar: TFormProcurar
   Font.Style = []
   KeyPreview = True
   Position = poScreenCenter
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 15
@@ -47,10 +49,12 @@ object FormProcurar: TFormProcurar
         Caption = 'Descri'#231#227'o'
         Width = 320
       end>
+    OwnerData = True
     ReadOnly = True
     RowSelect = True
     TabOrder = 1
     ViewStyle = vsReport
+    OnData = lvProcurarData
     OnDblClick = lvProcurarDblClick
     OnKeyPress = lvProcurarKeyPress
   end

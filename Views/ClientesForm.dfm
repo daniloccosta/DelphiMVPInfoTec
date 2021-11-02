@@ -15,6 +15,7 @@ object FormClientes: TFormClientes
   Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 15
   object Label1: TLabel
@@ -78,10 +79,12 @@ object FormClientes: TFormClientes
         Caption = 'Nome'
         Width = 326
       end>
+    OwnerData = True
     ReadOnly = True
     RowSelect = True
     TabOrder = 2
     ViewStyle = vsReport
+    OnData = lvClientesData
     OnDblClick = lvClientesDblClick
     OnKeyDown = lvClientesKeyDown
   end

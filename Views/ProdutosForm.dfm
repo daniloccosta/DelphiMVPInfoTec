@@ -15,6 +15,7 @@ object FormProdutos: TFormProdutos
   Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 15
   object Label2: TLabel
@@ -98,10 +99,12 @@ object FormProdutos: TFormProdutos
         Caption = 'Pre'#231'o'
         Width = 80
       end>
+    OwnerData = True
     ReadOnly = True
     RowSelect = True
     TabOrder = 3
     ViewStyle = vsReport
+    OnData = lvProdutosData
     OnDblClick = lvProdutosDblClick
     OnKeyDown = lvProdutosKeyDown
   end

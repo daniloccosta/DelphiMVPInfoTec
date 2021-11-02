@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls,
-  Generics.Collections;
+  System.Contnrs, Utils;
 
 type
   TFormProcurar = class(TForm)
@@ -20,10 +20,16 @@ type
     procedure edProcurarPorChange(Sender: TObject);
     procedure edProcurarPorKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure lvProcurarData(Sender: TObject; Item: TListItem);
   private
     { Private declarations }
+    procedure AplicarFiltro(Const Filtro: String);
   public
     { Public declarations }
+    Lista: TObjectList;
+    ItensListados: TList;
   end;
 
 var
@@ -33,12 +39,32 @@ implementation
 
 {$R *.dfm}
 
+uses Produto, Cliente;
+
 { TFormProcurar }
 
 
+procedure TFormProcurar.AplicarFiltro(const Filtro: String);
+var
+  i: Integer;
+begin
+  lvProcurar.Items.BeginUpdate;
+  try
+    lvProcurar.Clear;
+    ItensListados.Clear;
+    for i := 0 to Lista.Count - 1 do
+      if (Filtro = '') or (Pos(UpperCase(Filtro), UpperCase(TProduto(Lista[i]).Descricao)) <> 0) then
+        ItensListados.Add(Lista[i]);
+    lvProcurar.Items.Count := ItensListados.Count;
+
+  finally
+    lvProcurar.Items.EndUpdate;
+  end;
+end;
+
 procedure TFormProcurar.edProcurarPorChange(Sender: TObject);
 begin
-  //lvProcurar.Items.Add.SubItems.
+  AplicarFiltro(TEdit(Sender).Text);
 end;
 
 procedure TFormProcurar.edProcurarPorKeyDown(Sender: TObject; var Key: Word;
@@ -51,6 +77,18 @@ begin
   end;
 end;
 
+procedure TFormProcurar.FormCreate(Sender: TObject);
+begin
+  Lista := TObjectList.Create;
+  ItensListados := TList.Create;
+end;
+
+procedure TFormProcurar.FormDestroy(Sender: TObject);
+begin
+  //Lista.Free;
+  ItensListados.Free;
+end;
+
 procedure TFormProcurar.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -61,6 +99,28 @@ begin
   end
   else if (Key = VK_ESCAPE) then
     Close;
+end;
+
+procedure TFormProcurar.lvProcurarData(Sender: TObject; Item: TListItem);
+var
+  Produto: TProduto;
+  Cliente: TCliente;
+begin
+  if (Lista.Items[Item.Index] is TProduto) then
+  begin
+    Produto := TProduto.Create;
+    Produto := TProduto(ItensListados.Items[Item.Index]);
+    Item.Caption := Produto.Id.ToString;
+    Item.SubItems.Add(Produto.Descricao);
+    Item.SubItems.Add(FormatFloat('#,##0.00', Produto.Preco));
+  end
+  else if (Lista.Items[Item.Index] is TCliente) then
+  begin
+    Cliente := TCliente.Create;
+    Cliente := TCliente(ItensListados.Items[Item.Index]);
+    Item.Caption := Cliente.Id.ToString;
+    Item.SubItems.Add(Cliente.Nome);
+  end;
 end;
 
 procedure TFormProcurar.lvProcurarDblClick(Sender: TObject);

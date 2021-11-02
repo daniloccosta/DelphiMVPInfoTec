@@ -2,8 +2,8 @@ unit Utils;
 
 interface
 
-uses Vcl.StdCtrls, Vcl.Controls, System.SysUtils, Classes, Generics.Collections,
-  Vcl.ComCtrls;
+uses Vcl.StdCtrls, Vcl.Controls, System.SysUtils, System.Contnrs, Classes,
+  Generics.Collections, Vcl.ComCtrls;
 
 const
   Inserindo = 0;
@@ -12,7 +12,7 @@ const
   procedure FormatarComoMoeda(Componente: TObject; var Key: Char);
   procedure SomenteNumeros(Componente: TObject; var Key: Char; isDecimal: Boolean = False);
   function MoedaToDouble(Val: String): Double;
-  function Procurar(Lista: TListItems; Colunas: TListColumns; Titulo, Rotulo: String): TObject;
+  function Procurar(Lista: TObjectList; Colunas: TListColumns; Titulo, Rotulo: String): TObject;
   function AddDiasUteis(DataInicial: TDate; Dias: Integer): TDate;
 
 type
@@ -21,7 +21,6 @@ type
 implementation
 
 uses ProcurarForm;
-
 
 function AddDiasUteis(DataInicial: TDate; Dias: Integer): TDate;
 var
@@ -42,33 +41,25 @@ begin
     if Not(DayOfWeek(Result) in [1, 7]) then
       Inc(contador);
   end;
-
-//  while (DataInicial <= DataFinal) do
-//  begin
-//    if ((DayOfWeek(DataInicial) <> 1) and (DayOfWeek(DataInicial) <> 7)) then
-//      Inc(Contador);
-//      DataInicial := DataInicial + 1
-//  end;
-//  result := Contador;
 end;
 
-function Procurar(Lista: TListItems; Colunas: TListColumns; Titulo,
+function Procurar(Lista: TObjectList; Colunas: TListColumns; Titulo,
   Rotulo: String): TObject;
 var
   i: Integer;
 begin
   FormProcurar := TFormProcurar.Create(Nil);
+  FormProcurar.Lista := Lista;
   FormProcurar.Caption := Titulo;
   FormProcurar.lbProcurarPor.Caption := Rotulo;
-  FormProcurar.lvProcurar.Items.Assign(Lista);
   FormProcurar.lvProcurar.Columns := Colunas;
   FormProcurar.ShowModal;
 
   if (FormProcurar.lvProcurar.Selected = Nil) or (Lista.Count = 0) then
     Result := nil
   else begin
-    i := FormProcurar.lvProcurar.Selected.SubItems.Count - 1;
-    Result := FormProcurar.lvProcurar.Selected.SubItems.Objects[i];
+    i := FormProcurar.lvProcurar.Selected.Index;
+    Result := FormProcurar.ItensListados[i];
   end;
 
   FreeAndNil(FormProcurar);

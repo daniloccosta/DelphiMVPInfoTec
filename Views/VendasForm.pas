@@ -4,9 +4,10 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  System.UITypes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls,
-  Vcl.WinXPickers, Vcl.StdCtrls, PedidoMVPIntf, Pedido, ProdutoMVPIntf, ProdutoIntf,
-  Produto, Generics.Collections, Vcl.Buttons, Vcl.ExtCtrls, Cliente, ClienteMVPIntf;
+  System.UITypes, System.Contnrs, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.ComCtrls, Vcl.WinXPickers, Vcl.StdCtrls, PedidoMVPIntf, Pedido, ProdutoMVPIntf,
+  ProdutoIntf, Produto, Utils, Generics.Collections, Vcl.Buttons, Vcl.ExtCtrls,
+  Cliente, ClienteMVPIntf;
 
 type
   TFormVendas = class(TForm, IPedidoView)
@@ -54,8 +55,8 @@ type
     FPedPresenter: Pointer;
     FProdPresenter: Pointer;
     FCliPresenter: Pointer;
-    FProdutos: TList<TProduto>;
-    FClientes: TList<TCliente>;
+    FProdutos: TObjectList;
+    FClientes: TObjectList;
     function GetPedido: TPedido;
     procedure SetPedido(Value: TPedido);
     function GetPresenter: IPedidoPresenter;
@@ -69,6 +70,7 @@ type
     procedure ProcurarCliente;
     procedure LimparCampos;
     procedure CalcularValorTotalItem;
+    function PodeAdicionarItem: Boolean;
     procedure AdicionaItem;
     procedure RemoverItem;
     procedure BuscarProdutoPeloCodigo(Cod: Integer);
@@ -92,7 +94,8 @@ implementation
 
 {$R *.dfm}
 
-uses ProdutoPresenter, ProdutoM, Utils, MainUnit, Item, ProdutoView;
+uses ProdutoPresenter, ProdutoM, MainUnit, Item, ProdutoView,
+  ProcurarForm;
 
 { TFormVendas }
 
@@ -135,7 +138,8 @@ var
   ViewProduto: IProdutoView;
 begin
   ViewProduto := TProdutoView.Create;
-  FProduto := TProduto.Create;
+  if (FProduto = nil) then
+    FProduto := TProduto.Create;
   try
     PresenterProduto.View := ViewProduto;
     ViewProduto.Presenter := PresenterProduto;
@@ -204,7 +208,8 @@ procedure TFormVendas.edValorUnitKeyPress(Sender: TObject; var Key: Char);
 begin
   if (Key = #13) then
   begin
-    AdicionaItem;
+    if PodeAdicionarItem then
+      AdicionaItem;
     edCodigo.SetFocus;
   end;
 end;
@@ -217,18 +222,35 @@ begin
 end;
 
 procedure TFormVendas.FormCreate(Sender: TObject);
+var
+  tempCli: TList<TCliente>;
+  tempProd: TList<TProduto>;
+  i: Integer;
 begin
   IniciarPedido;
 
   PresenterCliente := MainForm.PresenterCliente;
   PresenterProduto := MainForm.PresenterProduto;
 
-  FProdutos := TList<TProduto>.Create;
-  FClientes := TList<TCliente>.Create;
+  FProdutos := TObjectList.Create;
+  FClientes := TObjectList.Create;
 
-  //Listar Clientes e Produtos;
-  FClientes := PresenterCliente.ListAll;
-  FProdutos := PresenterProduto.ListAll;
+  //Preencher Listas de  Clientes e Produtos;
+  //Preferi assim, para reduzir trabalho com a implementação
+  //da tela procura (FormProcurar)
+  tempCli := PresenterCliente.ListAll;
+  tempProd := PresenterProduto.ListAll;
+  try
+    for i := 0 to tempCli.Count - 1 do
+      FClientes.Add(tempCli.Items[i]);
+
+    for i := 0 to tempProd.Count - 1 do
+      FProdutos.Add(tempProd.Items[i]);
+  finally
+    //Não pode liberar, causa a liberaçao das instâncias em suas origens
+    //tempCli.Free;
+    //tempProd.Free;
+  end;
 end;
 
 procedure TFormVendas.FormKeyDown(Sender: TObject; var Key: Word;
@@ -295,34 +317,43 @@ begin
   LimparCampos;
 end;
 
+function TFormVendas.PodeAdicionarItem: Boolean;
+begin
+  Result := (Trim(edCodigo.Text) <> '')
+    and (Trim(edDescricao.Text) <> '')
+    and (Trim(edQuant.Text) <> '');
+end;
+
 function TFormVendas.PodeFinalizarVenda: Boolean;
 begin
   Result := False;
+
   if (Pedido.Items.Count = 0) then
   begin
     MessageDlg('Para finalizar o pedido, você deve adicionar produtos.', mtInformation, [mbOk], 0);
     Exit;
   end;
+
   if (Pedido.Cliente = Nil) then
-  begin
-    MessageDlg('Para finalizar o pedido, você deve informar um cliente.', mtInformation, [mbOk], 0);
-    Exit;
-  end;
+    if (Pedido.Cliente.Id <> 0) then
+    begin
+      MessageDlg('Para finalizar o pedido, você deve informar um cliente.', mtInformation, [mbOk], 0);
+      Exit;
+    end;
+
   if (Pedido.ValorTotal <= 0) then
   begin
     MessageDlg('O valor total do pedido nnão pode ser menor ou igual a zero.', mtInformation, [mbOk], 0);
     Exit;
   end;
+
   Result := True;
 end;
 
 procedure TFormVendas.ProcurarCliente;
 var
   Lista: TListView;
-  Item: TListItem;
   Column: TListColumn;
-  Cli: TCliente;
-  i: Integer;
   Retorno: TObject;
 begin
   Lista := TListView.Create(Self);
@@ -338,16 +369,7 @@ begin
     Column.Caption := 'Nome';
     Column.Width := 340;
 
-    for i := 0 to FClientes.Count - 1 do
-    begin
-      Item := Lista.Items.Add;
-      Cli := FClientes.Items[i];
-      Item.Caption := Cli.Id.ToString;
-      Item.SubItems.Add(Cli.Nome);
-      Item.SubItems.AddObject('', Cli);
-    end;
-
-    Retorno := Procurar(Lista.Items, Lista.Columns, 'Procurar cliente', 'Nome');
+    Retorno := Procurar(FClientes, Lista.Columns, 'Procurar cliente', 'Nome');
     if (Retorno <> nil) then
     begin
       Pedido.Cliente := TCliente(Retorno);
@@ -361,10 +383,7 @@ end;
 procedure TFormVendas.ProcurarProduto;
 var
   Lista: TListView;
-  Item: TListItem;
   Column: TListColumn;
-  Prod: TProduto;
-  i: Integer;
   Retorno: TObject;
 begin
   Lista := TListView.Create(Self);
@@ -372,6 +391,7 @@ begin
     Lista.Parent := Self;
     Lista.Visible := False;
 
+    //Carregando ListColumns
     Lista.Columns.Clear;
     Column := Lista.Columns.Add;
     Column.Caption := 'Código';
@@ -384,16 +404,8 @@ begin
     Column.Width := 90;
     Column.Alignment := taRightJustify;
 
-    for i := 0 to FProdutos.Count - 1 do
-    begin
-      Item := Lista.Items.Add;
-      Prod := FProdutos.Items[i];
-      Item.Caption := Prod.Id.ToString;
-      Item.SubItems.Add(Prod.Descricao);
-      Item.SubItems.Add(FormatFloat('0.00', Prod.Preco));
-      Item.SubItems.AddObject('', Prod);
-    end;
-    Retorno := Procurar(Lista.Items, Lista.Columns, 'Procurar produto', 'Descrição');
+    //Chama tela de Procura
+    Retorno := Procurar(FProdutos, Lista.Columns, 'Procurar produto', 'Descrição');
     if (Retorno <> nil) then
     begin
       //Retira o foco da edit antes de ser preenchida
@@ -416,11 +428,10 @@ procedure TFormVendas.RemoverItem;
 var
   idx: Integer;
 begin
-
-  if (Pedido.Items.Count > 0) and (lvCupom.Selected.Selected) then
+  if (Pedido.Items.Count > 0) and (lvCupom.Selected <> nil) then
   begin
+    idx := lvCupom.Selected.Index;
     if MessageDlg('Confirma a exclusão do item?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-      idx := lvCupom.Selected.Index;
       Pedido.RemoveItem(idx);
       lvCupom.Items.Delete(idx);
       edTotal.Text := FormatFloat('#,##0.00', Pedido.ValorTotal);

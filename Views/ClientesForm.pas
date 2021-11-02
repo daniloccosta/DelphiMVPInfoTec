@@ -23,9 +23,12 @@ type
       Shift: TShiftState);
     procedure lvClientesDblClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure lvClientesData(Sender: TObject; Item: TListItem);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     FCliente: TCliente;
+    FClientes: TList<TCliente>;
     FPresenter: Pointer;
     Estado: TEstados;
     procedure ListarClientes;
@@ -101,6 +104,11 @@ begin
     Close;
 end;
 
+procedure TFormClientes.FormShow(Sender: TObject);
+begin
+  ListarClientes;
+end;
+
 function TFormClientes.GetCliente: TCliente;
 begin
   Result := FCliente;
@@ -112,21 +120,9 @@ begin
 end;
 
 procedure TFormClientes.ListarClientes;
-var
-  Clientes: TList<TCliente>;
-  Cliente: TCliente;
-  I: Integer;
-  Item: TListItem;
 begin
-  lvClientes.Clear;
-  Clientes := Presenter.ListAll;
-  for I := 0 to Clientes.Count - 1 do
-  begin
-    Item := lvClientes.Items.Add;
-    Cliente := Clientes.Items[I];
-    Item.Caption := Cliente.Id.ToString;
-    Item.SubItems.Add(Cliente.Nome);
-  end;
+  FClientes := Presenter.ListAll;
+  lvClientes.Items.Count := FClientes.Count;
 end;
 
 procedure TFormClientes.SetCliente(Value: TCliente);
@@ -142,6 +138,15 @@ end;
 function TFormClientes.ShowView: TModalResult;
 begin
   Result := Self.ShowModal;
+end;
+
+procedure TFormClientes.lvClientesData(Sender: TObject; Item: TListItem);
+var
+  Cli: TCliente;
+begin
+  Cli := FClientes[Item.Index];
+  Item.Caption := Cli.Id.ToString;
+  Item.SubItems.Add(Cli.Nome);
 end;
 
 procedure TFormClientes.lvClientesDblClick(Sender: TObject);
@@ -168,7 +173,7 @@ var
   Cli: TCliente;
 begin
   if ((ssCtrl in Shift) and (Key = VK_DELETE)) then
-    if (MessageDlg('Confirma a exclusão?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    if (MessageDlg('Confirma a exclusão?', mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
     begin
       Cli := TCliente.Create;
       Cli.Id := StrToInt(lvClientes.Items[lvClientes.ItemIndex].Caption);

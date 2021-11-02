@@ -25,9 +25,12 @@ type
     procedure FormCreate(Sender: TObject);
     procedure edPrecoKeyPress(Sender: TObject; var Key: Char);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure lvProdutosData(Sender: TObject; Item: TListItem);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     FProduto: TProduto;
+    FProdutos: TList<TProduto>;
     FPresenter: Pointer;
     Estado: TEstados;
     procedure ListarProdutos;
@@ -126,6 +129,11 @@ begin
     Close;
 end;
 
+procedure TFormProdutos.FormShow(Sender: TObject);
+begin
+  ListarProdutos;
+end;
+
 function TFormProdutos.GetPresenter: IProdutoPresenter;
 begin
   Result := IProdutoPresenter(FPresenter);
@@ -143,22 +151,19 @@ begin
 end;
 
 procedure TFormProdutos.ListarProdutos;
-var
-  Produtos: TList<TProduto>;
-  Produto: TProduto;
-  I: Integer;
-  Item: TListItem;
 begin
-  lvProdutos.Clear;
-  Produtos := Presenter.ListAll;
-  for I := 0 to Produtos.Count - 1 do
-  begin
-    Item := lvProdutos.Items.Add;
-    Produto := Produtos.Items[I];
-    Item.Caption := Produto.Id.ToString;
-    Item.SubItems.Add(Produto.Descricao);
-    Item.SubItems.Add(formatfloat('R$ #,##0.00', Produto.Preco));
-  end;
+  FProdutos := Presenter.ListAll;
+  lvProdutos.Items.Count := FProdutos.Count;
+end;
+
+procedure TFormProdutos.lvProdutosData(Sender: TObject; Item: TListItem);
+var
+  Prod: TProduto;
+begin
+  Prod := FProdutos.Items[Item.Index];
+  Item.Caption := Prod.Id.ToString;
+  Item.SubItems.Add(Prod.Descricao);
+  Item.SubItems.Add(formatfloat('R$ #,##0.00', Prod.Preco));
 end;
 
 procedure TFormProdutos.lvProdutosDblClick(Sender: TObject);
@@ -187,7 +192,7 @@ var
   Prod: TProduto;
 begin
   if ((ssCtrl in Shift) and (Key = VK_DELETE)) then
-    if (MessageDlg('Confirma a exclusão?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    if (MessageDlg('Confirma a exclusão?', mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
     begin
       Prod := TProduto.Create;
       Prod.Id := StrToInt(lvProdutos.Items[lvProdutos.ItemIndex].Caption);
