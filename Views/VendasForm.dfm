@@ -179,6 +179,13 @@ object FormVendas: TFormVendas
     Font.Style = []
     ParentFont = False
   end
+  object Label5: TLabel
+    Left = 136
+    Top = 496
+    Width = 85
+    Height = 15
+    Caption = '(F4) Excluir item'
+  end
   object lvCupom: TListView
     Left = 8
     Top = 8
@@ -208,6 +215,8 @@ object FormVendas: TFormVendas
         Width = 90
       end>
     ColumnClick = False
+    ReadOnly = True
+    RowSelect = True
     TabOrder = 0
     TabStop = False
     ViewStyle = vsReport
@@ -286,7 +295,7 @@ object FormVendas: TFormVendas
     TabOrder = 9
     Text = '0,00'
   end
-  object Edit2: TEdit
+  object edNumPed: TEdit
     Left = 713
     Top = 40
     Width = 131

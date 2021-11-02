@@ -15,6 +15,7 @@ type
     function GetQuantidade: Double;
     procedure SetQuantidade(Value: Double);
   public
+    constructor Create;
     property Produto: TProduto read GetProduto write SetProduto;
     property Quantidade: Double read GetQuantidade write SetQuantidade;
   end;
@@ -22,6 +23,11 @@ type
 implementation
 
 { TItem }
+
+constructor TItem.Create;
+begin
+  FProduto := TProduto.Create;
+end;
 
 function TItem.GetProduto: TProduto;
 begin

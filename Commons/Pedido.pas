@@ -14,6 +14,8 @@ type
     FFormaPagto: Integer;
     FValorTotal: Double;
     FItems: TList<TItem>;
+    procedure SetItems(Value: TList<TItem>);
+    procedure SetValorTotal(Value: Double);
   protected
     function GetId: Integer;
     procedure SetId(Value: Integer);
@@ -26,18 +28,20 @@ type
     function GetFormaPagto: Integer;
     procedure SetFormaPagto(Value: Integer);
     function GetValorTotal: Double;
-    procedure SetValorTotal(Value: Double);
+    procedure CalcValorTotal(NewValue: Double);
     function GetItems: TList<TItem>;
-    procedure SetItems(Value: TList<TItem>);
   public
     constructor Create;
+    procedure AddItem(Item: TItem);
+    procedure RemoveItem(Index: Integer);
+
     property Id: Integer read GetId write SetId;
     property Cliente: TCliente read GetCliente write SetCliente;
     property DataPedido: TDate read GetDataPedido write SetDataPedido;
     property DataEntrega: TDate read GetDataEntrega write SetDataEntrega;
     property FormaPagto: Integer read GetFormaPagto write SetFormaPagto;
-    property ValorTotal: Double read GetValorTotal write SetValorTotal;
-    property Items: TList<TItem> read GetItems write SetItems;
+    property ValorTotal: Double read GetValorTotal;
+    property Items: TList<TItem> read GetItems;
   end;
 
 implementation
@@ -61,13 +65,26 @@ end;
 
 function TPedido.GetId: Integer;
 begin
-  Result :=FId;
+  Result := FId;
+end;
+
+procedure TPedido.AddItem(Item: TItem);
+begin
+  FItems.Add(Item);
+  CalcValorTotal(Item.Quantidade * Item.Produto.Preco);
+end;
+
+procedure TPedido.CalcValorTotal(NewValue: Double);
+begin
+  FValorTotal := FValorTotal + NewValue;
 end;
 
 constructor TPedido.Create;
 begin
   FCliente := TCliente.Create;
   FItems := TList<TItem>.Create;
+  FId := Random(999999);
+  FValorTotal := 0;
 end;
 
 function TPedido.GetCliente: TCliente;
@@ -83,6 +100,15 @@ end;
 function TPedido.GetValorTotal: Double;
 begin
   Result := FValorTotal;
+end;
+
+procedure TPedido.RemoveItem(Index: Integer);
+var
+  Item: TItem;
+begin
+  Item := FItems.Items[Index];
+  CalcValorTotal((Item.Produto.Preco * Item.Quantidade) * -1);
+  FItems.Delete(Index);
 end;
 
 procedure TPedido.SetDataEntrega(Value: TDate);

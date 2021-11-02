@@ -52,7 +52,8 @@ var
 begin
   ViewCliente := TFormClientes.Create(Nil);
 
-  IniciarPresenterCliente;
+  if (PresenterCliente = nil) then
+    IniciarPresenterCliente;
 
   PresenterCliente.View := ViewCliente;
   ViewCliente.Presenter := PresenterCliente;
@@ -65,7 +66,8 @@ var
 begin
   ViewProduto := TFormProdutos.Create(Nil);
 
-  IniciarPresenterProduto;
+  if (PresenterProduto = nil) then
+    IniciarPresenterProduto;
 
   PresenterProduto.View := ViewProduto;
   ViewProduto.Presenter := PresenterProduto;

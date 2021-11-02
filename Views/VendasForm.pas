@@ -20,7 +20,7 @@ type
     dtDataEntrega: TDateTimePicker;
     edTotal: TEdit;
     Label10: TLabel;
-    Edit2: TEdit;
+    edNumPed: TEdit;
     Label11: TLabel;
     Label12: TLabel;
     Label13: TLabel;
@@ -37,6 +37,7 @@ type
     edCliente: TEdit;
     Label18: TLabel;
     Painel: TPanel;
+    Label5: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure edQuantExit(Sender: TObject);
@@ -66,8 +67,9 @@ type
     procedure ProcurarCliente;
     procedure LimparCampos;
     procedure CalcularValorTotalItem;
-    procedure CalcularValorTotalPedido;
     procedure AdicionaItem;
+    procedure RemoverItem;
+    procedure CalcularValorTotalPedido;
   public
     { Public declarations }
     property Pedido: TPedido read GetPedido write SetPedido;
@@ -101,7 +103,8 @@ begin
     Item.Produto := FProduto;
     Item.Quantidade := MoedaToDouble(edQuant.Text);
 
-    Pedido.Items.Add(Item);
+    Pedido.AddItem(Item);
+    edTotal.Text := FormatFloat('#,##0.00', Pedido.ValorTotal);
 
     ListItem := lvCupom.Items.Add;
     ListItem.Caption := Item.Produto.Id.ToString;
@@ -112,7 +115,7 @@ begin
 
     LimparCampos;
   finally
-    Item.Free;
+    //Item.Free;
   end;
 end;
 
@@ -160,14 +163,17 @@ end;
 procedure TFormVendas.edValorUnitKeyPress(Sender: TObject; var Key: Char);
 begin
   if (Key = #13) then
+  begin
     AdicionaItem;
+    edCodigo.SetFocus;
+  end;
 end;
 
 procedure TFormVendas.FormCreate(Sender: TObject);
 begin
   FPedido := TPedido.Create;
 
-  Pedido.Id := 0;
+  edNumPed.Text := FormatFloat('000000', Pedido.Id);
   Pedido.DataPedido := dtDataVenda.Date;
   Pedido.DataEntrega := dtDataEntrega.Date;
   Pedido.FormaPagto := cbFormaPagtos.ItemIndex;
@@ -197,7 +203,9 @@ begin
   else if (Key = VK_F2) then
     ProcurarCliente
   else if (Key = VK_F3) then
-    ProcurarProduto;
+    ProcurarProduto
+  else if (Key = VK_F4) then
+    RemoverItem;
 end;
 
 function TFormVendas.GetPedido: TPedido;
@@ -318,6 +326,19 @@ begin
     end;
   finally
     FreeAndNil(Lista);
+  end;
+end;
+
+procedure TFormVendas.RemoverItem;
+var
+  Index: Integer;
+begin
+  if (Pedido.Items.Count > 0) and (lvCupom.Selected.Selected) then
+  begin
+    if MessageDlg('Confirma a exclusão do item?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      Index := lvCupom.Selected.Index;
+      Pedido.RemoveItem(Index);
+      lvCupom.Items.Delete(Index);
   end;
 end;
 
