@@ -18,6 +18,8 @@ type
     procedure lvProcurarKeyPress(Sender: TObject; var Key: Char);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edProcurarPorChange(Sender: TObject);
+    procedure edProcurarPorKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -39,6 +41,16 @@ begin
   //lvProcurar.Items.Add.SubItems.
 end;
 
+procedure TFormProcurar.edProcurarPorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_DOWN)  then
+  begin
+    Key := 0;
+    SelectNext(ActiveControl, True, True);
+  end;
+end;
+
 procedure TFormProcurar.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -46,7 +58,9 @@ begin
   begin
     Key := 0;
     SelectNext(ActiveControl, True, True);
-  end;
+  end
+  else if (Key = VK_ESCAPE) then
+    Close;
 end;
 
 procedure TFormProcurar.lvProcurarDblClick(Sender: TObject);

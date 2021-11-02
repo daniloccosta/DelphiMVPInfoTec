@@ -96,7 +96,9 @@ begin
   begin
     Key := 0;
     SelectNext(ActiveControl, True, True);
-  end;
+  end
+  else if (Key = VK_ESCAPE) then
+    Close;
 end;
 
 function TFormClientes.GetCliente: TCliente;
@@ -166,13 +168,14 @@ var
   Cli: TCliente;
 begin
   if ((ssCtrl in Shift) and (Key = VK_DELETE)) then
-  begin
-    Cli := TCliente.Create;
-    Cli.Id := StrToInt(lvClientes.Items[lvClientes.ItemIndex].Caption);
-    Cliente := Cli;
-    Presenter.Delete;
-    ListarClientes;
-  end;
+    if (MessageDlg('Confirma a exclusão?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      Cli := TCliente.Create;
+      Cli.Id := StrToInt(lvClientes.Items[lvClientes.ItemIndex].Caption);
+      Cliente := Cli;
+      Presenter.Delete;
+      ListarClientes;
+    end;
 end;
 
 function TFormClientes.NomePreenchido: Boolean;

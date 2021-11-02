@@ -31,6 +31,7 @@ object FormProcurar: TFormProcurar
     CharCase = ecUpperCase
     TabOrder = 0
     OnChange = edProcurarPorChange
+    OnKeyDown = edProcurarPorKeyDown
   end
   object lvProcurar: TListView
     Left = 16

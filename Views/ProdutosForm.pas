@@ -121,7 +121,9 @@ begin
   begin
     Key := 0;
     SelectNext(ActiveControl, True, True);
-  end;
+  end
+  else if (Key = VK_ESCAPE) then
+    Close;
 end;
 
 function TFormProdutos.GetPresenter: IProdutoPresenter;
@@ -185,13 +187,14 @@ var
   Prod: TProduto;
 begin
   if ((ssCtrl in Shift) and (Key = VK_DELETE)) then
-  begin
-    Prod := TProduto.Create;
-    Prod.Id := StrToInt(lvProdutos.Items[lvProdutos.ItemIndex].Caption);
-    Produto := Prod;
-    Presenter.Delete;
-    ListarProdutos;
-  end;
+    if (MessageDlg('Confirma a exclusão?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      Prod := TProduto.Create;
+      Prod.Id := StrToInt(lvProdutos.Items[lvProdutos.ItemIndex].Caption);
+      Produto := Prod;
+      Presenter.Delete;
+      ListarProdutos;
+    end;
 end;
 
 procedure TFormProdutos.SetPresenter(const Value: IProdutoPresenter);
