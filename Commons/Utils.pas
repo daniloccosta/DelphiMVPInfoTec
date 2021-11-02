@@ -13,6 +13,7 @@ const
   procedure SomenteNumeros(Componente: TObject; var Key: Char; isDecimal: Boolean = False);
   function MoedaToDouble(Val: String): Double;
   function Procurar(Lista: TListItems; Colunas: TListColumns; Titulo, Rotulo: String): TObject;
+  function AddDiasUteis(DataInicial: TDate; Dias: Integer): TDate;
 
 type
   TEstados = Set of Inserindo..Editando;
@@ -21,6 +22,35 @@ implementation
 
 uses ProcurarForm;
 
+
+function AddDiasUteis(DataInicial: TDate; Dias: Integer): TDate;
+var
+  contador: Integer;
+begin
+  if (Dias <= 0) then
+  begin
+    result := DataInicial;
+    exit
+  end;
+
+  Result := DataInicial;
+  contador := 0;
+
+  while (contador < Dias) do
+  begin
+    Result := Result + 1;
+    if Not(DayOfWeek(Result) in [1, 7]) then
+      Inc(contador);
+  end;
+
+//  while (DataInicial <= DataFinal) do
+//  begin
+//    if ((DayOfWeek(DataInicial) <> 1) and (DayOfWeek(DataInicial) <> 7)) then
+//      Inc(Contador);
+//      DataInicial := DataInicial + 1
+//  end;
+//  result := Contador;
+end;
 
 function Procurar(Lista: TListItems; Colunas: TListColumns; Titulo,
   Rotulo: String): TObject;

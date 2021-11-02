@@ -17,7 +17,6 @@ type
     Label4: TLabel;
     cbFormaPagtos: TComboBox;
     dtDataVenda: TDateTimePicker;
-    dtDataEntrega: TDateTimePicker;
     edTotal: TEdit;
     Label10: TLabel;
     edNumPed: TEdit;
@@ -38,15 +37,16 @@ type
     Label18: TLabel;
     Painel: TPanel;
     Label5: TLabel;
+    edDataEntrega: TEdit;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure edQuantExit(Sender: TObject);
     procedure edQuantKeyPress(Sender: TObject; var Key: Char);
     procedure dtDataVendaChange(Sender: TObject);
-    procedure dtDataEntregaChange(Sender: TObject);
     procedure cbFormaPagtosChange(Sender: TObject);
     procedure edValorUnitKeyPress(Sender: TObject; var Key: Char);
     procedure edCodigoExit(Sender: TObject);
+    procedure btFecharVendaClick(Sender: TObject);
   private
     { Private declarations }
     FPedido: TPedido;
@@ -64,6 +64,7 @@ type
     procedure SetPresenterProd(const Value: IProdutoPresenter);
     function GetPresenterCli: IClientePresenter;
     procedure SetPresenterCli(const Value: IClientePresenter);
+    //****//
     procedure ProcurarProduto;
     procedure ProcurarCliente;
     procedure LimparCampos;
@@ -71,6 +72,9 @@ type
     procedure AdicionaItem;
     procedure RemoverItem;
     procedure BuscarProdutoPeloCodigo(Cod: Integer);
+    function PodeFinalizarVenda: Boolean;
+    procedure FinalizarVendas;
+    procedure IniciarPedido;
   public
     { Public declarations }
     property Pedido: TPedido read GetPedido write SetPedido;
@@ -120,6 +124,12 @@ begin
   end;
 end;
 
+procedure TFormVendas.btFecharVendaClick(Sender: TObject);
+begin
+  if PodeFinalizarVenda then
+    FinalizarVendas;
+end;
+
 procedure TFormVendas.BuscarProdutoPeloCodigo(Cod: Integer);
 var
   ViewProduto: IProdutoView;
@@ -162,14 +172,11 @@ begin
   Pedido.FormaPagto := cbFormaPagtos.ItemIndex;
 end;
 
-procedure TFormVendas.dtDataEntregaChange(Sender: TObject);
-begin
-  Pedido.DataEntrega := dtDataEntrega.Date;
-end;
-
 procedure TFormVendas.dtDataVendaChange(Sender: TObject);
 begin
   Pedido.DataPedido := dtDataVenda.Date;
+  Pedido.DataEntrega := AddDiasUteis(Pedido.DataPedido, 10);
+  edDataEntrega.Text := FormatDateTime('dd/mm/yyyy', Pedido.DataEntrega);
 end;
 
 procedure TFormVendas.edCodigoExit(Sender: TObject);
@@ -202,14 +209,16 @@ begin
   end;
 end;
 
+procedure TFormVendas.FinalizarVendas;
+begin
+  Presenter.Add;
+  IniciarPedido;
+  edCodigo.SetFocus;
+end;
+
 procedure TFormVendas.FormCreate(Sender: TObject);
 begin
-  FPedido := TPedido.Create;
-
-  edNumPed.Text := FormatFloat('000000', Pedido.Id);
-  Pedido.DataPedido := dtDataVenda.Date;
-  Pedido.DataEntrega := dtDataEntrega.Date;
-  Pedido.FormaPagto := cbFormaPagtos.ItemIndex;
+  IniciarPedido;
 
   PresenterCliente := MainForm.PresenterCliente;
   PresenterProduto := MainForm.PresenterProduto;
@@ -220,9 +229,6 @@ begin
   //Listar Clientes e Produtos;
   FClientes := PresenterCliente.ListAll;
   FProdutos := PresenterProduto.ListAll;
-
-  dtDataVenda.DateTime := Date;
-  dtDataEntrega.DateTime := Date;
 end;
 
 procedure TFormVendas.FormKeyDown(Sender: TObject; var Key: Word;
@@ -268,6 +274,46 @@ begin
   edQuant.Text := '1';
   edValorUnit.Text := '0.00';
   edValorTotal.Text := '0.00';
+end;
+
+procedure TFormVendas.IniciarPedido;
+begin
+  FPedido := TPedido.Create;
+
+  Pedido.DataPedido := Date;
+  Pedido.DataEntrega := AddDiasUteis(Pedido.DataPedido, 10);
+  Pedido.FormaPagto := cbFormaPagtos.ItemIndex;
+
+  edNumPed.Text := FormatFloat('000000', Pedido.Id);
+  dtDataVenda.Date := Pedido.DataPedido;
+  edDataEntrega.Text := FormatDateTime('dd/mm/yyyy', Pedido.DataEntrega);
+  edCliente.Text := '';
+  cbFormaPagtos.ItemIndex := 0;
+  edTotal.Text := '0.00';
+
+  lvCupom.Items.Clear;
+  LimparCampos;
+end;
+
+function TFormVendas.PodeFinalizarVenda: Boolean;
+begin
+  Result := False;
+  if (Pedido.Items.Count = 0) then
+  begin
+    MessageDlg('Para finalizar o pedido, você deve adicionar produtos.', mtInformation, [mbOk], 0);
+    Exit;
+  end;
+  if (Pedido.Cliente = Nil) then
+  begin
+    MessageDlg('Para finalizar o pedido, você deve informar um cliente.', mtInformation, [mbOk], 0);
+    Exit;
+  end;
+  if (Pedido.ValorTotal <= 0) then
+  begin
+    MessageDlg('O valor total do pedido nnão pode ser menor ou igual a zero.', mtInformation, [mbOk], 0);
+    Exit;
+  end;
+  Result := True;
 end;
 
 procedure TFormVendas.ProcurarCliente;
@@ -368,14 +414,15 @@ end;
 
 procedure TFormVendas.RemoverItem;
 var
-  Index: Integer;
+  idx: Integer;
 begin
+
   if (Pedido.Items.Count > 0) and (lvCupom.Selected.Selected) then
   begin
     if MessageDlg('Confirma a exclusão do item?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-      Index := lvCupom.Selected.Index;
-      Pedido.RemoveItem(Index);
-      lvCupom.Items.Delete(Index);
+      idx := lvCupom.Selected.Index;
+      Pedido.RemoveItem(idx);
+      lvCupom.Items.Delete(idx);
       edTotal.Text := FormatFloat('#,##0.00', Pedido.ValorTotal);
   end;
 end;

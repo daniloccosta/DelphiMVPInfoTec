@@ -190,7 +190,7 @@ object FormVendas: TFormVendas
     Left = 8
     Top = 8
     Width = 527
-    Height = 420
+    Height = 425
     Color = clBtnFace
     Columns = <
       item
@@ -259,23 +259,6 @@ object FormVendas: TFormVendas
     TabOrder = 7
     TabStop = False
     OnChange = dtDataVendaChange
-  end
-  object dtDataEntrega: TDateTimePicker
-    Left = 557
-    Top = 322
-    Width = 142
-    Height = 33
-    Date = 44500.000000000000000000
-    Time = 0.981964201389928300
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -19
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 8
-    TabStop = False
-    OnChange = dtDataEntregaChange
   end
   object edTotal: TEdit
     Left = 712
@@ -395,12 +378,19 @@ object FormVendas: TFormVendas
   end
   object btFecharVenda: TBitBtn
     Left = 557
-    Top = 465
-    Width = 127
-    Height = 25
-    Caption = 'btFecharVenda'
+    Top = 446
+    Width = 287
+    Height = 44
+    Caption = '&Finalizar Venda'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 11
     TabStop = False
+    OnClick = btFecharVendaClick
   end
   object edCliente: TEdit
     Left = 556
@@ -425,5 +415,21 @@ object FormVendas: TFormVendas
     Width = 287
     Height = 41
     TabOrder = 13
+  end
+  object edDataEntrega: TEdit
+    Left = 557
+    Top = 322
+    Width = 142
+    Height = 33
+    TabStop = False
+    Color = clInactiveCaption
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 8
   end
 end
