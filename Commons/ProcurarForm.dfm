@@ -11,7 +11,9 @@ object FormProcurar: TFormProcurar
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  KeyPreview = True
   Position = poScreenCenter
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 15
   object lbProcurarPor: TLabel
@@ -28,6 +30,7 @@ object FormProcurar: TFormProcurar
     Height = 23
     CharCase = ecUpperCase
     TabOrder = 0
+    OnChange = edProcurarPorChange
   end
   object lvProcurar: TListView
     Left = 16

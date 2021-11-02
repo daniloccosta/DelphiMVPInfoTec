@@ -3,10 +3,10 @@ unit VendasForm;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.WinXPickers,
-  Vcl.StdCtrls, PedidoMVPIntf, Pedido, ProdutoMVPIntf, ProdutoIntf, Produto,
-  Generics.Collections, Vcl.Buttons, Vcl.ExtCtrls, Cliente, ClienteMVPIntf;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  System.UITypes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls,
+  Vcl.WinXPickers, Vcl.StdCtrls, PedidoMVPIntf, Pedido, ProdutoMVPIntf, ProdutoIntf,
+  Produto, Generics.Collections, Vcl.Buttons, Vcl.ExtCtrls, Cliente, ClienteMVPIntf;
 
 type
   TFormVendas = class(TForm, IPedidoView)
@@ -46,6 +46,7 @@ type
     procedure dtDataEntregaChange(Sender: TObject);
     procedure cbFormaPagtosChange(Sender: TObject);
     procedure edValorUnitKeyPress(Sender: TObject; var Key: Char);
+    procedure edCodigoExit(Sender: TObject);
   private
     { Private declarations }
     FPedido: TPedido;
@@ -69,7 +70,7 @@ type
     procedure CalcularValorTotalItem;
     procedure AdicionaItem;
     procedure RemoverItem;
-    procedure CalcularValorTotalPedido;
+    procedure BuscarProdutoPeloCodigo(Cod: Integer);
   public
     { Public declarations }
     property Pedido: TPedido read GetPedido write SetPedido;
@@ -87,7 +88,7 @@ implementation
 
 {$R *.dfm}
 
-uses ProdutoPresenter, ProdutoM, Utils, MainUnit, Item;
+uses ProdutoPresenter, ProdutoM, Utils, MainUnit, Item, ProdutoView;
 
 { TFormVendas }
 
@@ -119,6 +120,32 @@ begin
   end;
 end;
 
+procedure TFormVendas.BuscarProdutoPeloCodigo(Cod: Integer);
+var
+  ViewProduto: IProdutoView;
+begin
+  ViewProduto := TProdutoView.Create;
+  FProduto := TProduto.Create;
+  try
+    PresenterProduto.View := ViewProduto;
+    ViewProduto.Presenter := PresenterProduto;
+
+    FProduto.Id := Cod;
+    ViewProduto.Produto := FProduto;
+    FProduto := PresenterProduto.Get;
+    if (FProduto <> Nil) then
+    begin
+      edDescricao.Text := FProduto.Descricao;
+      edQuant.Text := '1';
+      edValorUnit.Text := FormatFloat('0.00', FProduto.Preco);
+      edValorTotal.Text := FormatFloat('0.00', FProduto.Preco);
+    end;
+  finally
+    ViewProduto := nil;
+  end;
+
+end;
+
 procedure TFormVendas.CalcularValorTotalItem;
 var
   tt: Double;
@@ -128,11 +155,6 @@ begin
 
   tt := MoedaToDouble(Trim(edQuant.Text)) * FProduto.Preco;
   edValorTotal.Text := FormatFloat('0.00', tt);
-end;
-
-procedure TFormVendas.CalcularValorTotalPedido;
-begin
-
 end;
 
 procedure TFormVendas.cbFormaPagtosChange(Sender: TObject);
@@ -148,6 +170,17 @@ end;
 procedure TFormVendas.dtDataVendaChange(Sender: TObject);
 begin
   Pedido.DataPedido := dtDataVenda.Date;
+end;
+
+procedure TFormVendas.edCodigoExit(Sender: TObject);
+var
+  Cod: Integer;
+begin
+  if (Trim(EdCodigo.Text) <> '') then
+  begin
+    Cod := StrToInt(Trim(edCodigo.Text));
+    BuscarProdutoPeloCodigo(Cod);
+  end;
 end;
 
 procedure TFormVendas.edQuantExit(Sender: TObject);
@@ -317,6 +350,10 @@ begin
     Retorno := Procurar(Lista.Items, Lista.Columns, 'Procurar produto', 'Descrição');
     if (Retorno <> nil) then
     begin
+      //Retira o foco da edit antes de ser preenchida
+      //para não ocorrer a busca dos dados do produto 2x
+      edQuant.SetFocus;
+
       FProduto := TProduto(Retorno);
       edCodigo.Text := FProduto.Id.ToString;
       edDescricao.Text := FProduto.Descricao;
@@ -339,6 +376,7 @@ begin
       Index := lvCupom.Selected.Index;
       Pedido.RemoveItem(Index);
       lvCupom.Items.Delete(Index);
+      edTotal.Text := FormatFloat('#,##0.00', Pedido.ValorTotal);
   end;
 end;
 

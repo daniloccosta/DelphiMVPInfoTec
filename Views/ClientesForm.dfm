@@ -11,8 +11,10 @@ object FormClientes: TFormClientes
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  KeyPreview = True
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 15
   object Label1: TLabel

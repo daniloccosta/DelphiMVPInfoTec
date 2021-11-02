@@ -325,6 +325,7 @@ object FormVendas: TFormVendas
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    OnExit = edCodigoExit
   end
   object edDescricao: TEdit
     Left = 63

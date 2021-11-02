@@ -16,6 +16,8 @@ type
     btCancel: TBitBtn;
     procedure lvProcurarDblClick(Sender: TObject);
     procedure lvProcurarKeyPress(Sender: TObject; var Key: Char);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edProcurarPorChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -31,6 +33,21 @@ implementation
 
 { TFormProcurar }
 
+
+procedure TFormProcurar.edProcurarPorChange(Sender: TObject);
+begin
+  //lvProcurar.Items.Add.SubItems.
+end;
+
+procedure TFormProcurar.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then
+  begin
+    Key := 0;
+    SelectNext(ActiveControl, True, True);
+  end;
+end;
 
 procedure TFormProcurar.lvProcurarDblClick(Sender: TObject);
 begin

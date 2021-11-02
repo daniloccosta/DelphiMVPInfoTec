@@ -22,6 +22,7 @@ type
     procedure lvClientesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure lvClientesDblClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     FCliente: TCliente;
@@ -86,6 +87,16 @@ procedure TFormClientes.FormCreate(Sender: TObject);
 begin
   Estado := [Inserindo];
   FCliente := TCliente.Create;
+end;
+
+procedure TFormClientes.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then
+  begin
+    Key := 0;
+    SelectNext(ActiveControl, True, True);
+  end;
 end;
 
 function TFormClientes.GetCliente: TCliente;

@@ -24,6 +24,7 @@ type
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure edPrecoKeyPress(Sender: TObject; var Key: Char);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     FProduto: TProduto;
@@ -111,6 +112,16 @@ procedure TFormProdutos.FormCreate(Sender: TObject);
 begin
   Estado := [Inserindo];
   FProduto := TProduto.Create;
+end;
+
+procedure TFormProdutos.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then
+  begin
+    Key := 0;
+    SelectNext(ActiveControl, True, True);
+  end;
 end;
 
 function TFormProdutos.GetPresenter: IProdutoPresenter;
