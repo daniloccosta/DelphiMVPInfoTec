@@ -1,12 +1,8 @@
 # Exemplo simples de aplicativo de Vendas usando padrão MVP
 
-### São apenas 3 telas:
+### São 3 telas demonstrando as operações básicas de um CRUD:
 
-![Clientes](https://github.com/daniloccosta/DelphiMVPInfoTec/blob/main/Imagens/clientes.png)
-Cadastro de Clientes
-
-![Produtos](https://github.com/daniloccosta/DelphiMVPInfoTec/blob/main/Imagens/produtos.png)
-Cadastro de Produtos
-
-![Vendas](https://github.com/daniloccosta/DelphiMVPInfoTec/blob/main/Imagens/vendas.png)
-Tela de Vendas/Pedidos
+- ⚡Cadastro de Clientes
+  [Clientes](/Imagens/Tela Clientes.png)
+- ⚡Cadastro de Produtos
+- ⚡Tela de Vendas/Pedidos
