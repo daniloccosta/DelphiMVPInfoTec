@@ -17,6 +17,7 @@ const
 
 type
   TEstados = Set of Inserindo..Editando;
+  TEstadoViewPedidos = (evDigitandoPedido, evEsperandoPedido, evVisualizandoPedido);
 
 implementation
 
@@ -79,7 +80,7 @@ procedure SomenteNumeros(Componente: TObject; var Key: Char; isDecimal: Boolean 
 begin
   if not isDecimal then
   begin
-    if not (CharInSet(Key, ['0'..'9', Chr(8)])) then
+    if not (CharInSet(Key, ['0'..'9', Chr(8), Char(13)])) then
       Key := #0
   end
   else

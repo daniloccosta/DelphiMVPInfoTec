@@ -32,13 +32,15 @@ type
     edValorUnit: TEdit;
     edValorTotal: TEdit;
     btFecharVenda: TBitBtn;
-    Label16: TLabel;
+    lbProcurarProduto: TLabel;
     Label17: TLabel;
     edCliente: TEdit;
     Label18: TLabel;
     Painel: TPanel;
-    Label5: TLabel;
+    lbExcluirItem: TLabel;
     edDataEntrega: TEdit;
+    lbConsultarPedido: TLabel;
+    lbIniciarPedido: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure edQuantExit(Sender: TObject);
@@ -48,8 +50,13 @@ type
     procedure edValorUnitKeyPress(Sender: TObject; var Key: Char);
     procedure edCodigoExit(Sender: TObject);
     procedure btFecharVendaClick(Sender: TObject);
+    procedure edNumPedKeyPress(Sender: TObject; var Key: Char);
+    procedure edNumPedKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure lvCupomData(Sender: TObject; Item: TListItem);
   private
     { Private declarations }
+    EstadoViewPedido: TEstadoViewPedidos;
     FPedido: TPedido;
     FProduto: TProduto;
     FPedPresenter: Pointer;
@@ -75,8 +82,11 @@ type
     procedure RemoverItem;
     procedure BuscarProdutoPeloCodigo(Cod: Integer);
     function PodeFinalizarVenda: Boolean;
+    procedure LimparTela;
     procedure FinalizarVendas;
     procedure IniciarPedido;
+    procedure ConsultarPedido;
+    procedure HabilitarControlesTela;
   public
     { Public declarations }
     property Pedido: TPedido read GetPedido write SetPedido;
@@ -114,39 +124,53 @@ begin
     Pedido.AddItem(Item);
     edTotal.Text := FormatFloat('#,##0.00', Pedido.ValorTotal);
 
-    ListItem := lvCupom.Items.Add;
-    ListItem.Caption := Item.Produto.Id.ToString;
-    ListItem.SubItems.Add(Item.Produto.Descricao);
-    ListItem.SubItems.Add(Item.Quantidade.ToString);
-    ListItem.SubItems.Add(FormatFloat('0.00', Item.Produto.Preco));
-    ListItem.SubItems.Add(FormatFloat('0.00', Item.Quantidade * Item.Produto.Preco));;
+    lvCupom.Items.Count := Pedido.Items.Count;
+
+//    ListItem := lvCupom.Items.Add;
+//    ListItem.Caption := Item.Produto.Id.ToString;
+//    ListItem.SubItems.Add(Item.Produto.Descricao);
+//    ListItem.SubItems.Add(Item.Quantidade.ToString);
+//    ListItem.SubItems.Add(FormatFloat('0.00', Item.Produto.Preco));
+//    ListItem.SubItems.Add(FormatFloat('#,##0.00', Item.Quantidade * Item.Produto.Preco));;
 
     LimparCampos;
   finally
-    //Item.Free;
   end;
 end;
 
 procedure TFormVendas.btFecharVendaClick(Sender: TObject);
 begin
   if PodeFinalizarVenda then
+  begin
     FinalizarVendas;
+    EstadoViewPedido := evEsperandoPedido;
+    HabilitarControlesTela;
+  end;
 end;
 
 procedure TFormVendas.BuscarProdutoPeloCodigo(Cod: Integer);
 var
-  ViewProduto: IProdutoView;
+  i: Integer;
+//var
+//  ViewProduto: IProdutoView;
 begin
-  ViewProduto := TProdutoView.Create;
+//  ViewProduto := TProdutoView.Create;
   if (FProduto = nil) then
     FProduto := TProduto.Create;
   try
-    PresenterProduto.View := ViewProduto;
-    ViewProduto.Presenter := PresenterProduto;
+//    PresenterProduto.View := ViewProduto;
+//    ViewProduto.Presenter := PresenterProduto;
 
-    FProduto.Id := Cod;
-    ViewProduto.Produto := FProduto;
-    FProduto := PresenterProduto.Get;
+    for i := 0 to FProdutos.Count - 1 do
+      if (TProduto(FProdutos.Items[i]).Id = Cod) then
+      begin
+        FProduto := TProduto(FProdutos.Items[i]);
+        Break;
+      end;
+
+//    FProduto.Id := Cod;
+//    ViewProduto.Produto := FProduto;
+//    FProduto := PresenterProduto.Get;
     if (FProduto <> Nil) then
     begin
       edDescricao.Text := FProduto.Descricao;
@@ -155,7 +179,7 @@ begin
       edValorTotal.Text := FormatFloat('0.00', FProduto.Preco);
     end;
   finally
-    ViewProduto := nil;
+//    ViewProduto := nil;
   end;
 
 end;
@@ -176,6 +200,25 @@ begin
   Pedido.FormaPagto := cbFormaPagtos.ItemIndex;
 end;
 
+procedure TFormVendas.ConsultarPedido;
+begin
+  if (Trim(edNumPed.Text) = '') then
+  begin
+    MessageDlg('Informe o número do pedido.', mtInformation, [mbOk], 0);
+    edNumPed.SetFocus;
+    Exit;
+  end;
+
+  Pedido.Id := StrToInt(Trim(edNumPed.Text));
+  Pedido := Presenter.Get;
+
+  MessageDlg('Consulta Pedido'+#13+
+              'Pedido: '+ Pedido.Id.ToString +#13+
+              'Cliente: '+ Pedido.Cliente.Nome +#13+
+              'Itens: '+ Pedido.Items.Count.ToString +#13+
+              'Total:; '+ Pedido.ValorTotal.ToString, mtInformation, [mbOk], 0);
+end;
+
 procedure TFormVendas.dtDataVendaChange(Sender: TObject);
 begin
   Pedido.DataPedido := dtDataVenda.Date;
@@ -192,6 +235,18 @@ begin
     Cod := StrToInt(Trim(edCodigo.Text));
     BuscarProdutoPeloCodigo(Cod);
   end;
+end;
+
+procedure TFormVendas.edNumPedKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then
+    ConsultarPedido;
+end;
+
+procedure TFormVendas.edNumPedKeyPress(Sender: TObject; var Key: Char);
+begin
+  SomenteNumeros(Sender, Key, False);
 end;
 
 procedure TFormVendas.edQuantExit(Sender: TObject);
@@ -217,8 +272,8 @@ end;
 procedure TFormVendas.FinalizarVendas;
 begin
   Presenter.Add;
-  IniciarPedido;
-  edCodigo.SetFocus;
+  LimparTela;
+  //edCodigo.SetFocus;
 end;
 
 procedure TFormVendas.FormCreate(Sender: TObject);
@@ -227,7 +282,9 @@ var
   tempProd: TList<TProduto>;
   i: Integer;
 begin
-  IniciarPedido;
+  EstadoViewPedido := evEsperandoPedido;
+  HabilitarControlesTela;
+  //IniciarPedido;
 
   PresenterCliente := MainForm.PresenterCliente;
   PresenterProduto := MainForm.PresenterProduto;
@@ -266,7 +323,21 @@ begin
   else if (Key = VK_F3) then
     ProcurarProduto
   else if (Key = VK_F4) then
-    RemoverItem;
+    RemoverItem
+  else if (Key = VK_F5) then
+  begin
+    ConsultarPedido;
+    EstadoViewPedido := evVisualizandoPedido;
+    HabilitarControlesTela;
+  end
+  else if (Key = VK_F6) then
+  begin
+    IniciarPedido;
+    EstadoViewPedido := evDigitandoPedido;
+    HabilitarControlesTela;
+  end
+  else if (Key = VK_F7) then
+    btFecharVendaClick(btFecharVenda);
 end;
 
 function TFormVendas.GetPedido: TPedido;
@@ -289,6 +360,41 @@ begin
   Result := IProdutoPresenter(FProdPresenter);
 end;
 
+procedure TFormVendas.HabilitarControlesTela;
+begin
+  dtDataVenda.Enabled := (EstadoViewPedido = evDigitandoPedido);
+  if (EstadoViewPedido = evDigitandoPedido) then
+  begin
+    edNumPed.ReadOnly := True;
+    edNumPed.Color := clInactiveCaption;
+
+    edCodigo.Enabled := True;
+    edQuant.Enabled := True;
+    edValorUnit.Enabled := True;
+
+    lbProcurarProduto.Enabled := True;
+    lbExcluirItem.Enabled := True;
+    lbConsultarPedido.Enabled := False;
+    lbIniciarPedido.Enabled := False;
+    btFecharVenda.Enabled := True;
+  end
+  else begin
+    edNumPed.ReadOnly := False;
+    edNumPed.Color := clWindow;
+    //edNumPed.SetFocus;
+
+    edCodigo.Enabled := False;
+    edQuant.Enabled := False;
+    edValorUnit.Enabled := False;
+
+    lbProcurarProduto.Enabled := False;
+    lbExcluirItem.Enabled := False;
+    lbConsultarPedido.Enabled := True;
+    lbIniciarPedido.Enabled := True;
+    btFecharVenda.Enabled := False;
+  end;
+end;
+
 procedure TFormVendas.LimparCampos;
 begin
   edCodigo.Text := '';
@@ -296,6 +402,29 @@ begin
   edQuant.Text := '1';
   edValorUnit.Text := '0.00';
   edValorTotal.Text := '0.00';
+end;
+
+procedure TFormVendas.LimparTela;
+begin
+  edNumPed.Text := FormatFloat('000000', 0);
+  dtDataVenda.Date := Date;
+  edDataEntrega.Text := '';
+  edCliente.Text := '';
+  cbFormaPagtos.ItemIndex := 0;
+  edTotal.Text := '0.00';
+
+  lvCupom.Items.Clear;
+  LimparCampos;
+end;
+
+procedure TFormVendas.lvCupomData(Sender: TObject; Item: TListItem);
+begin
+  Item.Caption := Pedido.Items[Item.Index].Produto.Id.ToString;
+  Item.SubItems.Add(Pedido.Items[Item.Index].Produto.Descricao);
+  Item.SubItems.Add(FormatFloat('0.00', Pedido.Items[Item.Index].Quantidade));
+  Item.SubItems.Add(FormatFloat('0.00', Pedido.Items[Item.Index].Produto.Preco));
+  Item.SubItems.Add(FormatFloat('#,##0.00',
+    Pedido.Items[Item.Index].Quantidade * Pedido.Items[Item.Index].Produto.Preco));;
 end;
 
 procedure TFormVendas.IniciarPedido;

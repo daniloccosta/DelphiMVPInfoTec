@@ -25,7 +25,8 @@ uses
   PedidoMVPIntf in 'Interfaces\PedidoMVPIntf.pas',
   PedidoPresenter in 'Presenters\PedidoPresenter.pas',
   ProcurarForm in 'Commons\ProcurarForm.pas' {FormProcurar},
-  ProdutoView in 'Views\ProdutoView.pas';
+  ProdutoView in 'Views\ProdutoView.pas',
+  PedidoForm in 'Views\PedidoForm.pas' {FormPedido};
 
 {$R *.res}
 

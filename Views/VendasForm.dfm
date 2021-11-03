@@ -146,7 +146,7 @@ object FormVendas: TFormVendas
     Font.Style = []
     ParentFont = False
   end
-  object Label16: TLabel
+  object lbProcurarProduto: TLabel
     Left = 8
     Top = 496
     Width = 114
@@ -179,12 +179,26 @@ object FormVendas: TFormVendas
     Font.Style = []
     ParentFont = False
   end
-  object Label5: TLabel
+  object lbExcluirItem: TLabel
     Left = 136
     Top = 496
     Width = 85
     Height = 15
     Caption = '(F4) Excluir item'
+  end
+  object lbConsultarPedido: TLabel
+    Left = 233
+    Top = 496
+    Width = 114
+    Height = 15
+    Caption = '(F5) Consultar Pedido'
+  end
+  object lbIniciarPedido: TLabel
+    Left = 359
+    Top = 496
+    Width = 95
+    Height = 15
+    Caption = '(F6) Iniciar Pedido'
   end
   object lvCupom: TListView
     Left = 8
@@ -215,11 +229,13 @@ object FormVendas: TFormVendas
         Width = 90
       end>
     ColumnClick = False
+    OwnerData = True
     ReadOnly = True
     RowSelect = True
     TabOrder = 0
     TabStop = False
     ViewStyle = vsReport
+    OnData = lvCupomData
   end
   object cbFormaPagtos: TComboBox
     Left = 556
@@ -295,6 +311,8 @@ object FormVendas: TFormVendas
     ReadOnly = True
     TabOrder = 10
     Text = '000000'
+    OnKeyDown = edNumPedKeyDown
+    OnKeyPress = edNumPedKeyPress
   end
   object edCodigo: TEdit
     Left = 8
@@ -381,7 +399,7 @@ object FormVendas: TFormVendas
     Top = 446
     Width = 287
     Height = 44
-    Caption = '&Finalizar Venda'
+    Caption = '(F7) Finalizar Venda'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16
@@ -407,7 +425,6 @@ object FormVendas: TFormVendas
     ParentFont = False
     ReadOnly = True
     TabOrder = 12
-    Text = 'CLIENTE'
   end
   object Painel: TPanel
     Left = 557

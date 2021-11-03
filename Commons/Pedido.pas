@@ -83,7 +83,7 @@ constructor TPedido.Create;
 begin
   FCliente := TCliente.Create;
   FItems := TList<TItem>.Create;
-  FId := Random(999999);
+  //FId := Random(999999);
   FValorTotal := 0;
 end;
 
