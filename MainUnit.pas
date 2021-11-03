@@ -6,30 +6,41 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, ClientesForm,
   ClienteIntf, ClienteMVPIntf, ProdutoIntf, ProdutoMVPIntf, PedidoIntf,
-  PedidoMVPIntf;
+  PedidoMVPIntf, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList,
+  Vcl.Buttons;
 
 type
   TMainForm = class(TForm)
-    btCadCLientes: TButton;
-    btCadProdutos: TButton;
-    btVendas: TButton;
-    procedure btCadCLientesClick(Sender: TObject);
-    procedure btCadProdutosClick(Sender: TObject);
-    procedure btVendasClick(Sender: TObject);
+    btCadClientes: TBitBtn;
+    btnCadProdutos: TBitBtn;
+    btnVendas: TBitBtn;
+    ActionList1: TActionList;
+    ImageList1: TImageList;
+    acClientes: TAction;
+    acProdutos: TAction;
+    acVendas: TAction;
+    procedure FormShow(Sender: TObject);
+    procedure acVendasExecute(Sender: TObject);
+    procedure acClientesExecute(Sender: TObject);
+    procedure acProdutosExecute(Sender: TObject);
   private
     { Private declarations }
-    procedure IniciarPresenterCliente;
-    procedure IniciarPresenterProduto;
-    procedure IniciarPresenterPedido;
+    procedure IniciarMVPCliente;
+    procedure IniciarMVPProduto;
+    procedure IniciarMVPPedido;
+    procedure AdicionarDadosParaTestes;
   public
     { Public declarations }
     ModelCliente: ICliente;
+    ViewCliente: IClienteView;
     PresenterCliente: IClientePresenter;
 
     ModelProduto: IProduto;
+    ViewProduto: IProdutoView;
     PresenterProduto: IProdutoPresenter;
 
     ModelPedido: IPedido;
+    ViewPedido: IPedidoView;
     PresenterPedido: IPedidoPresenter;
   end;
 
@@ -46,71 +57,113 @@ uses ClientePresenter, ClienteM, ProdutosForm,
 
 //uses ClienteIntf, ClienteMVPIntf, ClientePresenter, ClienteM;
 
-procedure TMainForm.btCadCLientesClick(Sender: TObject);
-var
-  ViewCliente: IClienteView;
+procedure TMainForm.acClientesExecute(Sender: TObject);
 begin
-  ViewCliente := TFormClientes.Create(Nil);
-
   if (PresenterCliente = nil) then
-    IniciarPresenterCliente;
+    IniciarMVPCliente;
 
-  PresenterCliente.View := ViewCliente;
-  ViewCliente.Presenter := PresenterCliente;
   ViewCliente.ShowView;
 end;
 
-procedure TMainForm.btCadProdutosClick(Sender: TObject);
-var
-  ViewProduto: IProdutoView;
+procedure TMainForm.acProdutosExecute(Sender: TObject);
 begin
-  ViewProduto := TFormProdutos.Create(Nil);
-
   if (PresenterProduto = nil) then
-    IniciarPresenterProduto;
+    IniciarMVPProduto;
 
-  PresenterProduto.View := ViewProduto;
-  ViewProduto.Presenter := PresenterProduto;
   ViewProduto.ShowView;
 end;
 
-procedure TMainForm.btVendasClick(Sender: TObject);
-var
-  ViewPedido: IPedidoView;
+procedure TMainForm.acVendasExecute(Sender: TObject);
 begin
   if (PresenterCliente = nil) then
-    IniciarPresenterCliente;
+    IniciarMVPCliente;
   if (PresenterProduto = Nil) then
-    IniciarPresenterProduto;
+    IniciarMVPProduto;
+  if (PresenterPedido = Nil) then
+    IniciarMVPPedido;
 
-  ViewPedido := TFormVendas.Create(Nil);
-
-  IniciarPresenterPedido;
-
-  PresenterPedido.View := ViewPedido;
-  ViewPedido.Presenter := PresenterPedido;
   ViewPedido.ShowView;
 end;
 
-procedure TMainForm.IniciarPresenterCliente;
+procedure TMainForm.AdicionarDadosParaTestes;
 begin
+  //#### CLIENTES ####//
+  ViewCliente.Cliente.Nome := 'DANILO';
+  PresenterCliente.Add;
+  //******//
+  ViewCliente.Cliente.Nome := 'LAURA';
+  PresenterCliente.Add;
+  //******//
+  ViewCliente.Cliente.Nome := 'SAMUEL';
+  PresenterCliente.Add;
+  //******//
+  ViewCliente.Cliente.Nome := 'STELA';
+  PresenterCliente.Add;
+
+  //#### PRODUTOS #####//
+  ViewProduto.Produto.Descricao := 'PRODUTO A';
+  ViewProduto.Produto.Preco := 1.23;
+  PresenterProduto.Add;
+  //******//
+  ViewProduto.Produto.Descricao := 'PRODUTO B';
+  ViewProduto.Produto.Preco := 4.56;
+  PresenterProduto.Add;
+  //******//
+  ViewProduto.Produto.Descricao := 'PRODUTO C';
+  ViewProduto.Produto.Preco := 7.89;
+  PresenterProduto.Add;
+  //******//
+  ViewProduto.Produto.Descricao := 'PRODUTO D';
+  ViewProduto.Produto.Preco := 3.21;
+  PresenterProduto.Add;
+  //******//
+  ViewProduto.Produto.Descricao := 'PRODUTO E';
+  ViewProduto.Produto.Preco := 6.54;
+  PresenterProduto.Add;
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  IniciarMVPCliente;
+  IniciarMVPProduto;
+
+  AdicionarDadosParaTestes;
+end;
+
+procedure TMainForm.IniciarMVPCliente;
+begin
+  ViewCliente := TFormClientes.Create(Nil);
+
   PresenterCliente := TClientePresenter.Create;
   ModelCliente := TClienteM.Create;
   PresenterCliente.Model := ModelCliente;
+
+  PresenterCliente.View := ViewCliente;
+  ViewCliente.Presenter := PresenterCliente;
 end;
 
-procedure TMainForm.IniciarPresenterPedido;
+procedure TMainForm.IniciarMVPPedido;
 begin
+  ViewPedido := TFormVendas.Create(Nil);
+
   ModelPedido := TPedidoM.Create;
   PresenterPedido := TPedidoPresenter.Create;
   PresenterPedido.Model := ModelPedido;
+
+  PresenterPedido.View := ViewPedido;
+  ViewPedido.Presenter := PresenterPedido;
 end;
 
-procedure TMainForm.IniciarPresenterProduto;
+procedure TMainForm.IniciarMVPProduto;
 begin
+  ViewProduto := TFormProdutos.Create(Nil);
+
   PresenterProduto := TProdutoPresenter.Create;
   ModelProduto := TProdutoM.Create;
   PresenterProduto.Model := ModelProduto;
+
+  PresenterProduto.View := ViewProduto;
+  ViewProduto.Presenter := PresenterProduto;
 end;
 
 end.

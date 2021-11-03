@@ -10,7 +10,7 @@ type
     ['{21C598A0-B11D-4905-B88C-49E8256A5EFA}']
     function GetPedido: TPedido;
     procedure SetPedido(Value: TPedido);
-    procedure Add;
+    function Add: Integer;
     function Get: TPedido;
 //    procedure Update;
 //    procedure Delete;

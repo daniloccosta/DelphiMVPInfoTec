@@ -15,7 +15,7 @@ type
     function GetView: IPedidoView;
     procedure SetView(const Value: IPedidoView);
   public
-    procedure Add;
+    function Add: Integer;
     function Get: TPedido;
     function ListAll: TList<TPedido>;
 
@@ -27,10 +27,13 @@ implementation
 
 { TPedidoPresenter }
 
-procedure TPedidoPresenter.Add;
+function TPedidoPresenter.Add: Integer;
 begin
   Model.Pedido := View.Pedido;
-  Model.Add;
+  Result := Model.Add;
+
+  //Prepara View para novo Pedido
+  View.Pedido := TPedido.Create;
 end;
 
 function TPedidoPresenter.Get: TPedido;

@@ -51,8 +51,6 @@ type
     procedure edCodigoExit(Sender: TObject);
     procedure btFecharVendaClick(Sender: TObject);
     procedure edNumPedKeyPress(Sender: TObject; var Key: Char);
-    procedure edNumPedKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure lvCupomData(Sender: TObject; Item: TListItem);
   private
     { Private declarations }
@@ -91,8 +89,8 @@ type
     { Public declarations }
     property Pedido: TPedido read GetPedido write SetPedido;
     property Presenter: IPedidoPresenter read GetPresenter write SetPresenter;
-    property PresenterProduto: IProdutoPresenter read GetPresenterProd write SetPresenterProd;
-    property PresenterCliente: IClientePresenter read GetPresenterCli write SetPresenterCli;
+    //property PresenterProduto: IProdutoPresenter read GetPresenterProd write SetPresenterProd;
+    //property PresenterCliente: IClientePresenter read GetPresenterCli write SetPresenterCli;
 
     function ShowView: TModalResult;
   end;
@@ -112,34 +110,26 @@ uses ProdutoPresenter, ProdutoM, MainUnit, Item, ProdutoView,
 procedure TFormVendas.AdicionaItem;
 var
   Item: TItem;
-  ListItem: TListItem;
 begin
+  FProduto.Preco := MoedaToDouble(edValorUnit.Text);
+
   Item := TItem.Create;
-  try
-    FProduto.Preco := MoedaToDouble(edValorUnit.Text);
+  Item.Produto := FProduto;
+  Item.Quantidade := MoedaToDouble(edQuant.Text);
 
-    Item.Produto := FProduto;
-    Item.Quantidade := MoedaToDouble(edQuant.Text);
+  Pedido.AddItem(Item);
+  edTotal.Text := FormatFloat('#,##0.00', Pedido.ValorTotal);
 
-    Pedido.AddItem(Item);
-    edTotal.Text := FormatFloat('#,##0.00', Pedido.ValorTotal);
+  lvCupom.Items.Count := Pedido.Items.Count;
 
-    lvCupom.Items.Count := Pedido.Items.Count;
-
-//    ListItem := lvCupom.Items.Add;
-//    ListItem.Caption := Item.Produto.Id.ToString;
-//    ListItem.SubItems.Add(Item.Produto.Descricao);
-//    ListItem.SubItems.Add(Item.Quantidade.ToString);
-//    ListItem.SubItems.Add(FormatFloat('0.00', Item.Produto.Preco));
-//    ListItem.SubItems.Add(FormatFloat('#,##0.00', Item.Quantidade * Item.Produto.Preco));;
-
-    LimparCampos;
-  finally
-  end;
+  LimparCampos;
 end;
 
 procedure TFormVendas.btFecharVendaClick(Sender: TObject);
 begin
+  if (EstadoViewPedido <> evDigitandoPedido) then
+    Exit;
+
   if PodeFinalizarVenda then
   begin
     FinalizarVendas;
@@ -202,6 +192,9 @@ end;
 
 procedure TFormVendas.ConsultarPedido;
 begin
+  if (EstadoViewPedido <> evEsperandoPedido) then
+    Exit;
+
   if (Trim(edNumPed.Text) = '') then
   begin
     MessageDlg('Informe o número do pedido.', mtInformation, [mbOk], 0);
@@ -209,14 +202,24 @@ begin
     Exit;
   end;
 
+  EstadoViewPedido := evVisualizandoPedido;
+
+  FPedido := TPedido.Create;
+
   Pedido.Id := StrToInt(Trim(edNumPed.Text));
   Pedido := Presenter.Get;
 
-  MessageDlg('Consulta Pedido'+#13+
-              'Pedido: '+ Pedido.Id.ToString +#13+
-              'Cliente: '+ Pedido.Cliente.Nome +#13+
-              'Itens: '+ Pedido.Items.Count.ToString +#13+
-              'Total:; '+ Pedido.ValorTotal.ToString, mtInformation, [mbOk], 0);
+  // ### Carregar dados na tela ###//
+  dtDataVenda.Date := Pedido.DataPedido;
+  edCliente.Text := Pedido.Cliente.Nome;
+  cbFormaPagtos.ItemIndex := Pedido.FormaPagto;
+  edDataEntrega.Text := FormatDateTime('dd/mm/yyyy', Pedido.DataEntrega);
+  edTotal.Text := FormatFloat('#,##0.00', Pedido.ValorTotal);
+  lvCupom.Items.Count := Pedido.Items.Count;
+  // ##############################//
+
+  //Após finalizar exibição do pedido, voltar para Status = evEsperandoPedido
+  EstadoViewPedido := evEsperandoPedido;
 end;
 
 procedure TFormVendas.dtDataVendaChange(Sender: TObject);
@@ -237,15 +240,11 @@ begin
   end;
 end;
 
-procedure TFormVendas.edNumPedKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = VK_RETURN) then
-    ConsultarPedido;
-end;
-
 procedure TFormVendas.edNumPedKeyPress(Sender: TObject; var Key: Char);
 begin
+  if (Key = #13) then
+    ConsultarPedido;
+
   SomenteNumeros(Sender, Key, False);
 end;
 
@@ -271,7 +270,8 @@ end;
 
 procedure TFormVendas.FinalizarVendas;
 begin
-  Presenter.Add;
+  MessageDlg('Pedido finalizado com sucesso'+#13#10+
+             'Número Pedido: '+ IntToStr(Presenter.Add), mtInformation, [mbOk], 0);
   LimparTela;
   //edCodigo.SetFocus;
 end;
@@ -284,10 +284,11 @@ var
 begin
   EstadoViewPedido := evEsperandoPedido;
   HabilitarControlesTela;
-  //IniciarPedido;
 
-  PresenterCliente := MainForm.PresenterCliente;
-  PresenterProduto := MainForm.PresenterProduto;
+  FPedido := TPedido.Create;
+
+//  PresenterCliente := MainForm.PresenterCliente;
+//  PresenterProduto := MainForm.PresenterProduto;
 
   FProdutos := TObjectList.Create;
   FClientes := TObjectList.Create;
@@ -295,8 +296,8 @@ begin
   //Preencher Listas de  Clientes e Produtos;
   //Preferi assim, para reduzir trabalho com a implementação
   //da tela procura (FormProcurar)
-  tempCli := PresenterCliente.ListAll;
-  tempProd := PresenterProduto.ListAll;
+  tempCli := MainForm.PresenterCliente.ListAll;
+  tempProd := MainForm.PresenterProduto.ListAll;
   try
     for i := 0 to tempCli.Count - 1 do
       FClientes.Add(tempCli.Items[i]);
@@ -327,7 +328,6 @@ begin
   else if (Key = VK_F5) then
   begin
     ConsultarPedido;
-    EstadoViewPedido := evVisualizandoPedido;
     HabilitarControlesTela;
   end
   else if (Key = VK_F6) then
@@ -419,6 +419,9 @@ end;
 
 procedure TFormVendas.lvCupomData(Sender: TObject; Item: TListItem);
 begin
+  if (Pedido.Items.Count = 0) then
+    Exit;
+
   Item.Caption := Pedido.Items[Item.Index].Produto.Id.ToString;
   Item.SubItems.Add(Pedido.Items[Item.Index].Produto.Descricao);
   Item.SubItems.Add(FormatFloat('0.00', Pedido.Items[Item.Index].Quantidade));
@@ -429,6 +432,9 @@ end;
 
 procedure TFormVendas.IniciarPedido;
 begin
+  if (EstadoViewPedido = evDigitandoPedido) then
+    Exit;
+
   FPedido := TPedido.Create;
 
   Pedido.DataPedido := Date;
@@ -485,6 +491,9 @@ var
   Column: TListColumn;
   Retorno: TObject;
 begin
+  if (EstadoViewPedido <> evDigitandoPedido) then
+    Exit;
+
   Lista := TListView.Create(Self);
   try
     Lista.Parent := Self;
@@ -515,6 +524,9 @@ var
   Column: TListColumn;
   Retorno: TObject;
 begin
+  if (EstadoViewPedido <> evDigitandoPedido) then
+    Exit;
+
   Lista := TListView.Create(Self);
   try
     Lista.Parent := Self;
@@ -557,12 +569,15 @@ procedure TFormVendas.RemoverItem;
 var
   idx: Integer;
 begin
+  if (EstadoViewPedido <> evDigitandoPedido) then
+    Exit;
+
   if (Pedido.Items.Count > 0) and (lvCupom.Selected <> nil) then
   begin
     idx := lvCupom.Selected.Index;
     if MessageDlg('Confirma a exclusão do item?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       Pedido.RemoveItem(idx);
-      lvCupom.Items.Delete(idx);
+      lvCupom.Items.Count := Pedido.Items.Count;
       edTotal.Text := FormatFloat('#,##0.00', Pedido.ValorTotal);
   end;
 end;

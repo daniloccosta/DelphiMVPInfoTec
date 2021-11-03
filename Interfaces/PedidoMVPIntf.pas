@@ -27,7 +27,7 @@ type
     function GetView: IPedidoView;
     procedure SetView(const Value: IPedidoView);
 
-    procedure Add;
+    function Add: Integer;
     function Get: TPedido;
     function ListAll: TList<TPedido>;
 

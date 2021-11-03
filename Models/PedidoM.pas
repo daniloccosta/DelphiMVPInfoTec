@@ -13,7 +13,7 @@ type
   protected
     function GetPedido: TPedido;
     procedure SetPedido(Value: TPedido);
-    procedure Add;
+    function Add: Integer;
     function Get: TPedido;
   public
     constructor Create;
@@ -26,10 +26,11 @@ implementation
 
 { TPedidoM }
 
-procedure TPedidoM.Add;
+function TPedidoM.Add: Integer;
 begin
   Pedido.Id := FPedidos.Count + 1;
   FPedidos.Add(Pedido);
+  Result := Pedido.Id;
 end;
 
 constructor TPedidoM.Create;

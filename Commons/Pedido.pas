@@ -14,8 +14,6 @@ type
     FFormaPagto: Integer;
     FValorTotal: Double;
     FItems: TList<TItem>;
-    procedure SetItems(Value: TList<TItem>);
-    procedure SetValorTotal(Value: Double);
   protected
     function GetId: Integer;
     procedure SetId(Value: Integer);
@@ -45,6 +43,9 @@ type
   end;
 
 implementation
+
+uses
+  System.SysUtils;
 
 { TPedido }
 
@@ -81,10 +82,13 @@ end;
 
 constructor TPedido.Create;
 begin
+  FId := 0;
   FCliente := TCliente.Create;
-  FItems := TList<TItem>.Create;
-  //FId := Random(999999);
+  FDataPedido := Date;
+  FDataEntrega := Date;
+  FFormaPagto := 0;
   FValorTotal := 0;
+  FItems := TList<TItem>.Create;
 end;
 
 function TPedido.GetCliente: TCliente;
@@ -134,16 +138,6 @@ end;
 procedure TPedido.SetCliente(Value: TCliente);
 begin
   FCliente := Value;
-end;
-
-procedure TPedido.SetItems(Value: TList<TItem>);
-begin
-  FItems := Value;
-end;
-
-procedure TPedido.SetValorTotal(Value: Double);
-begin
-  FValorTotal := Value;
 end;
 
 end.

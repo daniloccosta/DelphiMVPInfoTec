@@ -33,6 +33,9 @@ procedure TProdutoPresenter.Add;
 begin
   Model.Produto := View.Produto;
   Model.Add;
+
+  //Prepara View para novo Produto
+  View.Produto := TProduto.Create;
 end;
 
 procedure TProdutoPresenter.Delete;

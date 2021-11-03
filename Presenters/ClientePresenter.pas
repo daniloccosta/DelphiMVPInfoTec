@@ -38,6 +38,9 @@ procedure TClientePresenter.Add;
 begin
   Model.Cliente := View.Cliente;
   Model.Add;
+
+  //Prepara View para novo cliente
+  View.Cliente := TCliente.Create;
 end;
 
 constructor TClientePresenter.Create;

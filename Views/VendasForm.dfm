@@ -311,7 +311,6 @@ object FormVendas: TFormVendas
     ReadOnly = True
     TabOrder = 10
     Text = '000000'
-    OnKeyDown = edNumPedKeyDown
     OnKeyPress = edNumPedKeyPress
   end
   object edCodigo: TEdit
