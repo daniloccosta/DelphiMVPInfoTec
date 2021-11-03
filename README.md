@@ -25,3 +25,7 @@ Os dados não persistem, ou seja, os dados cadastrados permanecerão disponívei
   - Escolha a forma de pagamento;
   - Agora é hora de adicionar os produtos. No campo "Cód." digite o código do produto previamente cadastrado e pressione a tecla enter. Caso não saiba o código do produto basta pressionar a tecla F3 para chamar a tela de Procurar Produtos;
   - Informe a quantidade no campo "Quant.", pressione a tecla enter 2 vezes. Pronto! o produto foi inserido na lista;
+  - Caso queira excluir o produto, selecione o mesmo na lista e em seguida pressione a tecla F4, confirme a exclusão. Pronto! Exclusão feita!
+  > Também é possível consultar vendas já finalizadas, mas somente após abrir a tela de vendas ou após finalizar uma venda. Segue os passos:
+  > - No campo "Número do Pedido" informe o número do pedido que deseja abrir. Note que aqui você precisa saber o número do pedido! Após informar o número, pressione a tecla enter. Se existir uma venda/pedido para o número, será exibida na tela.
+  > - Não é possível editar o pedido em consulta. Esta também pode ser uma ótima sugestão de melhoria!!!.
