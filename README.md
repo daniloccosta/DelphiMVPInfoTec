@@ -20,4 +20,8 @@ Os dados não persistem, ou seja, os dados cadastrados permanecerão disponívei
 - ⚡Tela de Vendas/Pedidos
 
   ![](Imagens/TelaVendas.png)
-  - 
+  > Nesta demonstração os tipos de formas de pagamentos são fixos, mas fica a dica de melhoria para inclusão de um MVP para as "Formas de Pagamentos".
+  - Para incluir uma nova venda/pedido, pressione a tecla F6. Em seguida você deve selecionar um cliente previamente cadastrado, para isso, pressione a tecla F2, para chamar a tela de Procurar Clientes. Nesta tela, basta clicar duas vezes sobre o cliente ou pressionar a tecla enter quando o cliente escolhido estiver selecionado;
+  - Escolha a forma de pagamento;
+  - Agora é hora de adicionar os produtos. No campo "Cód." digite o código do produto previamente cadastrado e pressione a tecla enter. Caso não saiba o código do produto basta pressionar a tecla F3 para chamar a tela de Procurar Produtos;
+  - Informe a quantidade no campo "Quant.", pressione a tecla enter 2 vezes. Pronto! o produto foi inserido na lista;
