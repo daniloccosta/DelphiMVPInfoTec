@@ -169,9 +169,9 @@ object FormVendas: TFormVendas
   object Label18: TLabel
     Left = 739
     Top = 120
-    Width = 105
+    Width = 103
     Height = 13
-    Caption = '(F2) Procurar CLiente'
+    Caption = '(F2) Procurar Cliente'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
