@@ -270,8 +270,10 @@ end;
 
 procedure TFormVendas.FinalizarVendas;
 begin
-  MessageDlg('Pedido finalizado com sucesso'+#13#10+
-             'Número Pedido: '+ IntToStr(Presenter.Add), mtInformation, [mbOk], 0);
+  MessageDlg('Pedido finalizado com sucesso' +#13#10+
+             'Número Pedido: '+ IntToStr(Presenter.Add) +#13#10+
+             'Data de Entrega: '+ FormatDateTime('dd/mm/yyyy', Pedido.DataEntrega)
+             , mtInformation, [mbOk], 0);
   LimparTela;
   //edCodigo.SetFocus;
 end;
