@@ -15,7 +15,7 @@ object FormProcurar: TFormProcurar
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
   PixelsPerInch = 96
   TextHeight = 15
   object lbProcurarPor: TLabel

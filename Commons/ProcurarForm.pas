@@ -16,13 +16,13 @@ type
     btCancel: TBitBtn;
     procedure lvProcurarDblClick(Sender: TObject);
     procedure lvProcurarKeyPress(Sender: TObject; var Key: Char);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edProcurarPorChange(Sender: TObject);
     procedure edProcurarPorKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lvProcurarData(Sender: TObject; Item: TListItem);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     procedure AplicarFiltro(Const Filtro: String);
@@ -47,14 +47,23 @@ uses Produto, Cliente;
 procedure TFormProcurar.AplicarFiltro(const Filtro: String);
 var
   i: Integer;
+  PodeAddItem: Boolean;
 begin
   lvProcurar.Items.BeginUpdate;
   try
     lvProcurar.Clear;
     ItensListados.Clear;
     for i := 0 to Lista.Count - 1 do
-      if (Filtro = '') or (Pos(UpperCase(Filtro), UpperCase(TProduto(Lista[i]).Descricao)) <> 0) then
+    begin
+      PodeAddItem := False;
+      if (Lista[i].ClassType = TProduto) then
+        PodeAddItem := (Filtro = '') or (Pos(UpperCase(Filtro), UpperCase(TProduto(Lista[i]).Descricao)) <> 0)
+      else
+        PodeAddItem := (Filtro = '') or (Pos(UpperCase(Filtro), UpperCase(TCliente(Lista[i]).Nome)) <> 0);
+//      if (Filtro = '') or (Pos(UpperCase(Filtro), UpperCase(TProduto(Lista[i]).Descricao)) <> 0) then
+      if PodeAddItem then
         ItensListados.Add(Lista[i]);
+    end;
     lvProcurar.Items.Count := ItensListados.Count;
 
   finally
@@ -89,15 +98,14 @@ begin
   ItensListados.Free;
 end;
 
-procedure TFormProcurar.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TFormProcurar.FormKeyPress(Sender: TObject; var Key: Char);
 begin
-  if (Key = VK_RETURN) then
+  if (Key = #13) then
   begin
-    Key := 0;
+    Key := #0;
     SelectNext(ActiveControl, True, True);
   end
-  else if (Key = VK_ESCAPE) then
+  else if (Key = #27) then
     Close;
 end;
 

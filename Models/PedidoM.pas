@@ -13,10 +13,10 @@ type
   protected
     function GetPedido: TPedido;
     procedure SetPedido(Value: TPedido);
-    function Add: Integer;
-    function Get: TPedido;
   public
     constructor Create;
+    function Add: Integer;
+    function Get: TPedido;
     function ListAll: TList<TPedido>;
     property Pedido: TPedido read GetPedido write SetPedido;
   end;
