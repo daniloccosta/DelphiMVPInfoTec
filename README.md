@@ -1,6 +1,6 @@
 # Exemplo simples de aplicativo de Vendas usando padrão MVP
 
-Os dados não persistem, ou seja, os dados cadastrados permanecerão disponíveis somente durante a execução da aplicação.
+**Observação:** Os dados informados na aplicação não persistem, ou seja, os dados cadastrados permanecerão disponíveis somente durante a execução da aplicação.
 > Nota: Devido ao padrão MVP utilizado, é possível adicionar facilmente uma base de dados para persistência dos dados sem impactos nas camadas de View e Presenter.
 
 ### São 3 telas demonstrando as operações básicas de um CRUD:
